@@ -41,8 +41,16 @@ HEADERS  += \
     DownTrianglePlotMarker.h \
     MainWindow.h
 
-macx: LIBS += -L$$PWD/../PatternRecognitionLib/src/build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Debug/ -lPatternRecognitionLib
-macx: LIBS += -L/usr/local/lib -lboost_date_time -lboost_log -lboost_log_setup
+
+## PatternRecognitionLib is linked from the library built within the sub-module
+macx: LIBS += -L$$PWD/lib/PatternRecognitionLib/build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Debug/ -lPatternRecognitionLib
+
+## Link with pre-built version of Boost.
+DEFINES += BOOST_ALL_DYN_LINK
+DEFINES += BOOST_LOG_DYN_LINK
+macx: INCLUDEPATH += /usr/local/boost156/include
+macx: LIBS += -L/usr/local/boost156/lib -lboost_date_time-mt -lboost_log-mt -lboost_log_setup-mt -lboost_unit_test_framework-mt
+
 macx: include ( /usr/local/qwt-6.1.0/features/qwt.prf )
 macx: INCLUDEPATH += /usr/local/include
 
