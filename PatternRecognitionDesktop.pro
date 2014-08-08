@@ -52,14 +52,14 @@ macx: INCLUDEPATH += /usr/local/boost156/include
 macx: LIBS += -L/usr/local/boost156/lib -lboost_date_time-mt -lboost_log-mt -lboost_log_setup-mt -lboost_unit_test_framework-mt
 
 macx: include ( /usr/local/qwt-6.1.0/features/qwt.prf )
-macx: INCLUDEPATH += /usr/local/include
 
-macx: INCLUDEPATH += $$PWD/../PatternRecognitionLib/src/chartSegment\
-    $$PWD/../PatternRecognitionLib/src/chartSegmentList\
-    $$PWD/../PatternRecognitionLib/src/date\
-    $$PWD/../PatternRecognitionLib/src/math\
-    $$PWD/../PatternRecognitionLib/src/patternMatch\
-    $$PWD/../PatternRecognitionLib/src/patternMatchFilter\
-    $$PWD/../PatternRecognitionLib/src/patternMatchValidator\
-    $$PWD/../PatternRecognitionLib/src/patternScan\
-    $$PWD/../PatternRecognitionLib/src/quoteData
+macx: INCLUDEPATH += $$PWD/lib/PatternRecognitionLib/src/chartSegment\
+    $$PWD/lib/PatternRecognitionLib/src/chartSegmentList\
+    $$PWD/lib/PatternRecognitionLib/src/date\
+    $$PWD/lib/PatternRecognitionLib/src/math\
+    $$PWD/lib/PatternRecognitionLib/src/patternMatch\
+    $$PWD/lib/PatternRecognitionLib/src/patternMatchFilter\
+    $$PWD/lib/PatternRecognitionLib/src/patternMatchValidator\
+    $$PWD/lib/PatternRecognitionLib/src/patternScan\
+    $$PWD/lib/PatternRecognitionLib/src/patternShape\
+    $$PWD/lib/PatternRecognitionLib/src/quoteData
