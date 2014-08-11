@@ -28,7 +28,8 @@ SOURCES += main.cpp\
     StockChartPlotCurve.cpp \
     QDateHelper.cpp \
     DownTrianglePlotMarker.cpp \
-    MainWindow.cpp
+    MainWindow.cpp \
+    PatternPlotCurve.cpp
 
 HEADERS  += \
     griditem.h \
@@ -39,7 +40,8 @@ HEADERS  += \
     StockChartPlotCurve.h \
     QDateHelper.h \
     DownTrianglePlotMarker.h \
-    MainWindow.h
+    MainWindow.h \
+    PatternPlotCurve.h
 
 
 ## PatternRecognitionLib is linked from the library built within the sub-module

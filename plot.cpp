@@ -9,6 +9,8 @@
 #include <qwt_date_scale_draw.h>
 #include <qwt_plot.h>
 #include <qwt_plot_grid.h>
+#include <qwt_plot_curve.h>
+#include <qwt_symbol.h>
 #include <qwt_legend.h>
 #include <qwt_plot_barchart.h>
 
@@ -20,8 +22,14 @@
 #include "StockChartPlotZoomer.h"
 #include "StockChartPlotCurve.h"
 #include "DownTrianglePlotMarker.h"
+#include "PatternPlotCurve.h"
+#include "QDateHelper.h"
 
 #include "PeriodValSegment.h"
+#include "DoubleBottomScanner.h"
+#include "PatternShapeGenerator.h"
+#include "MultiPatternScanner.h"
+#include "PatternMatchFilter.h"
 #include <sstream>
 
 Plot::Plot( QWidget *parent ):
@@ -76,8 +84,9 @@ void Plot::populate()
     gridItem->attach( this );
 
 
-    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/tmp/aapl.csv");
-
+ //   PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/tmp/aapl.csv");
+    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile(
+     "/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternShape/QCOR_2013_2014_Weekly.csv");
     StockChartPlotCurve *chartDataCurve = new StockChartPlotCurve(chartData);
     chartDataCurve->attach( this );
     showItem( chartDataCurve, true );
@@ -87,34 +96,18 @@ void Plot::populate()
                     chartData->highestHighVal().high());
     highMarker->attach(this);
 
+    // Overlay the first pattern match on the chart.
+    PatternScannerPtr doubleBottomScanner(new DoubleBottomScanner(DoubleRange(7.0,40.0)));
+    MultiPatternScanner multiScanner(doubleBottomScanner);
+    PatternMatchListPtr doubleBottoms = multiScanner.scanUniquePatternMatches(chartData);
+    assert(doubleBottoms->size() > 0);
+    QwtPlotCurve *patternMatchPlot = new PatternPlotCurve(doubleBottoms->front());
+    patternMatchPlot->attach(this);
+
+
  /*
   *
   * TODO - Move the example code below to separate classes.
-
-
-    // Overlay some data on top of the stock chart - This would
-    // be used to show the pattern shape. Mapping a date to a
-    // double value is how the X value is determined
-    QwtPlotCurve *curve = new QwtPlotCurve();
-    curve->setTitle( "Pattern" );
-    curve->setPen( Qt::blue, 2 ),
-    curve->setRenderHint( QwtPlotItem::RenderAntialiased, true );
-
-    QwtSymbol *symbol = new QwtSymbol( QwtSymbol::Ellipse,
-        QBrush( Qt::yellow ), QPen( Qt::red, 1 ), QSize( 4, 4 ) );
-    curve->setSymbol( symbol );
-
-    QDateTime year2010( QDate( 2010, 1, 1 ), QTime( 0, 0 ), Qt::UTC );
-    QPolygonF points;
-    points << QPointF( QwtDate::toDouble( year2010.addDays( 50 )), 50.0 );
-    points << QPointF( QwtDate::toDouble( year2010.addDays( 100 )), 60.0);
-    points  << QPointF( QwtDate::toDouble( year2010.addDays( 150 )),45.0 );
-    points << QPointF( QwtDate::toDouble( year2010.addDays( 200 )), 75.0);
-    points << QPointF( QwtDate::toDouble( year2010.addDays( 250 )), 64.0);
-    points << QPointF( QwtDate::toDouble( year2010.addDays( 300 )), 25.0 );
-    curve->setSamples( points );
-
-    curve->attach( this );
 
     // Plot some dummy bar chart data for volume. This is
     QVector<QPointF> volumeData;
