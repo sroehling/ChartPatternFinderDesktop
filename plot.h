@@ -2,6 +2,8 @@
 #define _PLOT_H_
 
 #include <qwt_plot.h>
+#include "PatternMatch.h"
+#include "PeriodValSegment.h"
 
 class Plot: public QwtPlot
 {
@@ -19,6 +21,9 @@ private Q_SLOTS:
 
 private:
     void populate();
+    void populatePatternShapes(const PatternMatchPtr &patternMatch);
+    void populateDoubleBottomPatterns(const PeriodValSegmentPtr &chartData);
+    void populateSymetricWedgePatterns(const PeriodValSegmentPtr &chartData);
 };
 
 #endif

@@ -2,12 +2,12 @@
 #define PATTERNPLOTCURVE_H
 
 #include <qwt_plot_curve.h>
-#include "PatternMatch.h"
+#include "PatternShapePoint.h"
 
 class PatternPlotCurve : public QwtPlotCurve
 {
 public:
-    PatternPlotCurve(const PatternMatchPtr &patternMatch);
+    PatternPlotCurve(const PatternShapePointVectorPtr &shapeCurve);
 };
 
 #endif // PATTERNPLOTCURVE_H

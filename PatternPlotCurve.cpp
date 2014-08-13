@@ -5,8 +5,10 @@
 #include "QDateHelper.h"
 #include "PatternShapeGenerator.h"
 #include "PatternMatch.h"
+#include "PatternShape.h"
 
-PatternPlotCurve::PatternPlotCurve(const PatternMatchPtr &patternMatch)
+
+PatternPlotCurve::PatternPlotCurve(const PatternShapePointVectorPtr &shapeCurve)
 {
 
     setTitle( "Pattern" );
@@ -17,9 +19,6 @@ PatternPlotCurve::PatternPlotCurve(const PatternMatchPtr &patternMatch)
         QBrush( Qt::yellow ), QPen( Qt::red, 1 ), QSize( 4, 4 ) );
 
     setSymbol( symbol );
-
-    PatternShapeGenerator shapeGen;
-    PatternShapePointVectorPtr shapeCurve = shapeGen.generateShape(*patternMatch);
 
     QPolygonF shapePoints;
     for(PatternShapePointVector::iterator shapeIter = shapeCurve->begin();

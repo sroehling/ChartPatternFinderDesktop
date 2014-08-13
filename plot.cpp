@@ -30,6 +30,7 @@
 #include "PatternShapeGenerator.h"
 #include "MultiPatternScanner.h"
 #include "PatternMatchFilter.h"
+#include "SymetricWedgeScanner.h"
 #include <sstream>
 
 Plot::Plot( QWidget *parent ):
@@ -74,6 +75,48 @@ Plot::Plot( QWidget *parent ):
         SLOT( showItem( QwtPlotItem *, bool ) ) );
 }
 
+void Plot::populatePatternShapes(const PatternMatchPtr &patternMatch)
+{
+    PatternShapeGenerator shapeGen;
+    PatternShapePtr patternShape = shapeGen.generateShape(*patternMatch);
+    PatternShapePointVectorVectorPtr curveShapes = patternShape->curveShapes();
+
+    for(PatternShapePointVectorVector::iterator curveShapeIter = curveShapes->begin();
+        curveShapeIter != curveShapes->end(); curveShapeIter++)
+    {
+        QwtPlotCurve *patternMatchPlot = new PatternPlotCurve(*curveShapeIter);
+        patternMatchPlot->attach(this);
+
+    }
+
+}
+
+void Plot::populateDoubleBottomPatterns(const PeriodValSegmentPtr &chartData)
+{
+    // Overlay the first pattern match on the chart.
+    PatternScannerPtr doubleBottomScanner(new DoubleBottomScanner(DoubleRange(7.0,40.0)));
+    MultiPatternScanner multiScanner(doubleBottomScanner);
+    PatternMatchListPtr doubleBottoms = multiScanner.scanUniquePatternMatches(chartData);
+
+    if(doubleBottoms->size() > 0)
+    {
+        populatePatternShapes(doubleBottoms->front());
+    }
+
+}
+
+void Plot::populateSymetricWedgePatterns(const PeriodValSegmentPtr &chartData)
+{
+    SymetricWedgeScanner wedgeScanner;
+    PatternMatchListPtr symetricTriangles = wedgeScanner.scanPatternMatches(chartData);
+
+    if(symetricTriangles->size() > 0)
+    {
+        populatePatternShapes(symetricTriangles->back());
+    }
+
+}
+
 
 void Plot::populate()
 {
@@ -85,8 +128,12 @@ void Plot::populate()
 
 
  //   PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/tmp/aapl.csv");
+ //   PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile(
+ //    "/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternShape/QCOR_2013_2014_Weekly.csv");
     PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile(
-     "/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternShape/QCOR_2013_2014_Weekly.csv");
+     "/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/VZ_SymTriangle_Weekly_2013_2014.csv");
+
+
     StockChartPlotCurve *chartDataCurve = new StockChartPlotCurve(chartData);
     chartDataCurve->attach( this );
     showItem( chartDataCurve, true );
@@ -96,13 +143,8 @@ void Plot::populate()
                     chartData->highestHighVal().high());
     highMarker->attach(this);
 
-    // Overlay the first pattern match on the chart.
-    PatternScannerPtr doubleBottomScanner(new DoubleBottomScanner(DoubleRange(7.0,40.0)));
-    MultiPatternScanner multiScanner(doubleBottomScanner);
-    PatternMatchListPtr doubleBottoms = multiScanner.scanUniquePatternMatches(chartData);
-    assert(doubleBottoms->size() > 0);
-    QwtPlotCurve *patternMatchPlot = new PatternPlotCurve(doubleBottoms->front());
-    patternMatchPlot->attach(this);
+    populateDoubleBottomPatterns(chartData);
+    populateSymetricWedgePatterns(chartData);
 
 
  /*
