@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include "plot.h"
 #include <QItemSelectionModel>
+#include <QTableView>
+#include "PatternMatch.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +28,11 @@ public slots:
 
 private:
     Plot *d_plot;
+    QTableView* patternTable_;
+
+    // For some reason, using the PatternMatchListPtr causes a crash.
+    // TODO - Need to find the cause of this.
+    PatternMatchList *currentPatternMatches_;
 
 };
 

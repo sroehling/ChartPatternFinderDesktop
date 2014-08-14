@@ -57,9 +57,6 @@ Plot::Plot( QWidget *parent ):
     Legend *legend = new Legend;
     insertLegend( legend, QwtPlot::RightLegend );
 #endif
-
- //   populate();
-
     // LeftButton for the zooming
     // MidButton for the panning
     // RightButton: zoom out by 1
@@ -81,55 +78,31 @@ void Plot::populatePatternShapes(const PatternMatchPtr &patternMatch)
     PatternShapePtr patternShape = shapeGen.generateShape(*patternMatch);
     PatternShapePointVectorVectorPtr curveShapes = patternShape->curveShapes();
 
+    // Detach and delete any existing plot curves
+    this->detachItems(QwtPlotItem::Rtti_PlotCurve,true);
+
+    // Re-populate with the pattern for the given patternMatch
     for(PatternShapePointVectorVector::iterator curveShapeIter = curveShapes->begin();
         curveShapeIter != curveShapes->end(); curveShapeIter++)
     {
         QwtPlotCurve *patternMatchPlot = new PatternPlotCurve(*curveShapeIter);
         patternMatchPlot->attach(this);
-
     }
 
-}
-
-void Plot::populateDoubleBottomPatterns(const PeriodValSegmentPtr &chartData)
-{
-    // Overlay the first pattern match on the chart.
-    PatternScannerPtr doubleBottomScanner(new DoubleBottomScanner(DoubleRange(7.0,40.0)));
-    MultiPatternScanner multiScanner(doubleBottomScanner);
-    PatternMatchListPtr doubleBottoms = multiScanner.scanUniquePatternMatches(chartData);
-
-    if(doubleBottoms->size() > 0)
-    {
-        populatePatternShapes(doubleBottoms->back());
-    }
-
-}
-
-void Plot::populateSymetricWedgePatterns(const PeriodValSegmentPtr &chartData)
-{
-    SymetricWedgeScanner wedgeScanner;
-    PatternMatchListPtr symetricTriangles = wedgeScanner.scanPatternMatches(chartData);
-
-    if(symetricTriangles->size() > 0)
-    {
-        populatePatternShapes(symetricTriangles->back());
-    }
+    replot();
+    // TODO - Adjust the plot's visible area to encompass the pattern.
 
 }
 
 
-void Plot::populate()
+
+void Plot::populateChartData(const PeriodValSegmentPtr &chartData)
 {
     GridItem *gridItem = new GridItem();
 #if 0
     gridItem->setOrientations( Qt::Horizontal );
 #endif
     gridItem->attach( this );
-
-
-//    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternShape/QCOR_2013_2014_Weekly.csv");
-   PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/VZ_SymTriangle_Weekly_2013_2014.csv");
-
 
     StockChartPlotCurve *chartDataCurve = new StockChartPlotCurve(chartData);
     chartDataCurve->attach( this );
@@ -140,9 +113,7 @@ void Plot::populate()
                     chartData->highestHighVal().high());
     highMarker->attach(this);
 
-    populateDoubleBottomPatterns(chartData);
-    populateSymetricWedgePatterns(chartData);
-
+    replot();
 
  /*
   *

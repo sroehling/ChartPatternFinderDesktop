@@ -4,11 +4,19 @@
 #include <qtoolbutton.h>
 #include "plot.h"
 
+#include <QTableView>
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QDebug>
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
+
+#include "PeriodValSegment.h"
+#include "DoubleBottomScanner.h"
+#include "PatternShapeGenerator.h"
+#include "MultiPatternScanner.h"
+#include "PatternMatchFilter.h"
+#include "SymetricWedgeScanner.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -31,51 +39,68 @@ MainWindow::MainWindow(QWidget *parent) :
     toolBar->addWidget( btnExport );
     addToolBar( toolBar );
 
-    QTableView* patternTable = new QTableView();
-    unsigned int numRows = 2;
-    patternTable->setSelectionBehavior(QAbstractItemView::SelectRows);
-    patternTable->setSelectionMode(QAbstractItemView::SingleSelection);;
-    unsigned int numCols = 3;
-    QStandardItemModel *tableModel = new QStandardItemModel(numRows, numCols,this);
-    tableModel->setHorizontalHeaderItem(0,new QStandardItem("Pattern Type"));
-    tableModel->setHorizontalHeaderItem(1,new QStandardItem("Length"));
-    tableModel->setHorizontalHeaderItem(2,new QStandardItem("Depth"));
-    tableModel->setItem(0,0,new QStandardItem(QString("Double Bottom")));
-    tableModel->setItem(1,0,new QStandardItem(QString("Cup with Handle")));
-
-//   QItemSelectionModel *tableSelectionModel = new QItemSelectionModel(tableModel);
- //   patternTable->setSelectionModel(tableSelectionModel);
-    patternTable->setModel(tableModel);
-
-    connect(patternTable->selectionModel(), SIGNAL(selectionChanged (const QItemSelection&, const QItemSelection&)),
-              this, SLOT(patternTableSelectionChanged(const QItemSelection &,const QItemSelection &)));
-    qDebug() << "pattern table setup complete";
-
+    patternTable_ = new QTableView();
+    patternTable_->setSelectionBehavior(QAbstractItemView::SelectRows);
+    patternTable_->setSelectionMode(QAbstractItemView::SingleSelection);
+    patternTable_->setEditTriggers(QAbstractItemView::NoEditTriggers); // disable editing
 
     d_plot = new Plot( this );
-  //  setCentralWidget( d_plot );
     d_plot->setMode( typeBox->currentIndex() );
     connect( typeBox, SIGNAL( currentIndexChanged( int ) ),
         d_plot, SLOT( setMode( int ) ) );
 
-
-
     QVBoxLayout *mainWindowLayout = new QVBoxLayout;
     mainWindowLayout->addWidget(d_plot);
-    mainWindowLayout->addWidget(patternTable);
+    mainWindowLayout->addWidget(patternTable_);
 
     QWidget *centralWindow = new QWidget();
     centralWindow->setLayout(mainWindowLayout);
     setCentralWidget(centralWindow);
 
-    d_plot->populate();
+    // Layout is finished. Populate the pattern plot and pattern selectin table with some data.
+
+
+    //   PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternShape/QCOR_2013_2014_Weekly.csv");
+      PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/VZ_SymTriangle_Weekly_2013_2014.csv");
+
+    currentPatternMatches_ = new PatternMatchList();
+
+    PatternScannerPtr doubleBottomScanner(new DoubleBottomScanner(DoubleRange(7.0,40.0)));
+    MultiPatternScanner multiScanner(doubleBottomScanner);
+    PatternMatchListPtr doubleBottoms = multiScanner.scanUniquePatternMatches(chartData);
+    currentPatternMatches_->insert(currentPatternMatches_->end(),doubleBottoms->begin(),doubleBottoms->end());
+
+    SymetricWedgeScanner wedgeScanner;
+    PatternMatchListPtr symetricTriangles = wedgeScanner.scanPatternMatches(chartData);
+    currentPatternMatches_->insert(currentPatternMatches_->end(),symetricTriangles->begin(),symetricTriangles->end());
+
+    d_plot->populateChartData(chartData);
+
+
+    unsigned int numRows = currentPatternMatches_->size();
+    unsigned int numCols = 5;
+    QStandardItemModel *tableModel = new QStandardItemModel(numRows, numCols,this);
+    tableModel->setHorizontalHeaderItem(0,new QStandardItem("Pattern Type"));
+    tableModel->setHorizontalHeaderItem(1,new QStandardItem("Start"));
+    tableModel->setHorizontalHeaderItem(2,new QStandardItem("Finish"));
+    tableModel->setHorizontalHeaderItem(3,new QStandardItem("Length"));
+    tableModel->setHorizontalHeaderItem(4,new QStandardItem("Depth"));
+    tableModel->setItem(0,0,new QStandardItem(QString("Double Bottom")));
+    patternTable_->setModel(tableModel);
+
+    connect(patternTable_->selectionModel(), SIGNAL(selectionChanged (const QItemSelection&, const QItemSelection&)),
+              this, SLOT(patternTableSelectionChanged(const QItemSelection &,const QItemSelection &)));
+
+    if(currentPatternMatches_->size() > 0)
+    {
+        patternTable_->selectRow(0);
+    }
 
 }
 
 MainWindow::~MainWindow()
 {
-    // TBD - Should the destructor delete d_plot or does the main window take ownership?
- //   delete d_plot;
+     delete currentPatternMatches_;
 }
 
 
@@ -83,5 +108,16 @@ void MainWindow::patternTableSelectionChanged (const QItemSelection  &selected,
                                       const QItemSelection  & )
 {
     qDebug() << "Pattern Table Selection: " << selected;
+
+    unsigned int currentRow = patternTable_->selectionModel()->selectedRows().first().row();  //QModelIndexList is an ordered list
+    qDebug() << "Pattern Table Selection: selected row =  " << currentRow;
+
+    assert(currentRow< currentPatternMatches_->size());
+    assert(currentPatternMatches_ != NULL);
+
+    PatternMatchList::iterator matchListIter = currentPatternMatches_->begin();
+    std::advance(matchListIter,currentRow);
+    PatternMatchPtr currMatch = (*matchListIter);
+    d_plot->populatePatternShapes(currMatch);
 
 }
