@@ -49,14 +49,6 @@ Plot::Plot( QWidget *parent ):
 
     setAxisTitle( QwtPlot::yLeft, QString( "Price" ) );
 
-#if 0
-    QwtLegend *legend = new QwtLegend;
-    legend->setDefaultItemMode( QwtLegendData::Checkable );
-    insertLegend( legend, QwtPlot::RightLegend );
-#else
-    Legend *legend = new Legend;
-    insertLegend( legend, QwtPlot::RightLegend );
-#endif
     // LeftButton for the zooming
     // MidButton for the panning
     // RightButton: zoom out by 1
@@ -67,9 +59,6 @@ Plot::Plot( QWidget *parent ):
 
     QwtPlotPanner *panner = new QwtPlotPanner( canvas() );
     panner->setMouseButton( Qt::MidButton );
-
-    connect( legend, SIGNAL( checked( QwtPlotItem *, bool, int ) ),
-        SLOT( showItem( QwtPlotItem *, bool ) ) );
 }
 
 void Plot::populatePatternShapes(const PatternMatchPtr &patternMatch)
@@ -99,9 +88,6 @@ void Plot::populatePatternShapes(const PatternMatchPtr &patternMatch)
 void Plot::populateChartData(const PeriodValSegmentPtr &chartData)
 {
     GridItem *gridItem = new GridItem();
-#if 0
-    gridItem->setOrientations( Qt::Horizontal );
-#endif
     gridItem->attach( this );
 
     StockChartPlotCurve *chartDataCurve = new StockChartPlotCurve(chartData);
