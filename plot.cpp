@@ -58,7 +58,7 @@ Plot::Plot( QWidget *parent ):
     insertLegend( legend, QwtPlot::RightLegend );
 #endif
 
-    populate();
+ //   populate();
 
     // LeftButton for the zooming
     // MidButton for the panning
@@ -100,7 +100,7 @@ void Plot::populateDoubleBottomPatterns(const PeriodValSegmentPtr &chartData)
 
     if(doubleBottoms->size() > 0)
     {
-        populatePatternShapes(doubleBottoms->front());
+        populatePatternShapes(doubleBottoms->back());
     }
 
 }
@@ -127,11 +127,8 @@ void Plot::populate()
     gridItem->attach( this );
 
 
- //   PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/tmp/aapl.csv");
- //   PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile(
- //    "/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternShape/QCOR_2013_2014_Weekly.csv");
-    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile(
-     "/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/VZ_SymTriangle_Weekly_2013_2014.csv");
+//    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternShape/QCOR_2013_2014_Weekly.csv");
+   PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/VZ_SymTriangle_Weekly_2013_2014.csv");
 
 
     StockChartPlotCurve *chartDataCurve = new StockChartPlotCurve(chartData);

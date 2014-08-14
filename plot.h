@@ -11,6 +11,7 @@ class Plot: public QwtPlot
 
 public:
     Plot( QWidget * = NULL );
+    void populate();
 
 public Q_SLOTS:
     void setMode( int );
@@ -20,8 +21,7 @@ private Q_SLOTS:
     void showItem( QwtPlotItem *, bool on );
 
 private:
-    void populate();
-    void populatePatternShapes(const PatternMatchPtr &patternMatch);
+     void populatePatternShapes(const PatternMatchPtr &patternMatch);
     void populateDoubleBottomPatterns(const PeriodValSegmentPtr &chartData);
     void populateSymetricWedgePatterns(const PeriodValSegmentPtr &chartData);
 };
