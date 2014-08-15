@@ -8,8 +8,7 @@
 #include <QTableWidget>
 #include <QVBoxLayout>
 #include <QDebug>
-#include <QStandardItemModel>
-#include <QItemSelectionModel>
+#include "PatternMatchTableView.h"
 
 #include "PeriodValSegment.h"
 #include "DoubleBottomScanner.h"
@@ -39,10 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     toolBar->addWidget( btnExport );
     addToolBar( toolBar );
 
-    patternTable_ = new QTableView();
-    patternTable_->setSelectionBehavior(QAbstractItemView::SelectRows);
-    patternTable_->setSelectionMode(QAbstractItemView::SingleSelection);
-    patternTable_->setEditTriggers(QAbstractItemView::NoEditTriggers); // disable editing
+    patternTable_ = new PatternMatchTableView();
 
     d_plot = new Plot( this );
     d_plot->setMode( typeBox->currentIndex() );
@@ -60,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // Layout is finished. Populate the pattern plot and pattern selectin table with some data.
 
 
-    //   PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternShape/QCOR_2013_2014_Weekly.csv");
+  //     PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternShape/QCOR_2013_2014_Weekly.csv");
       PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/VZ_SymTriangle_Weekly_2013_2014.csv");
 
     currentPatternMatches_ = new PatternMatchList();
@@ -76,25 +72,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
     d_plot->populateChartData(chartData);
 
+    patternTable_->populatePatternMatches(*currentPatternMatches_);
 
-    unsigned int numRows = currentPatternMatches_->size();
-    unsigned int numCols = 5;
-    QStandardItemModel *tableModel = new QStandardItemModel(numRows, numCols,this);
-    tableModel->setHorizontalHeaderItem(0,new QStandardItem("Pattern Type"));
-    tableModel->setHorizontalHeaderItem(1,new QStandardItem("Start"));
-    tableModel->setHorizontalHeaderItem(2,new QStandardItem("Finish"));
-    tableModel->setHorizontalHeaderItem(3,new QStandardItem("Length"));
-    tableModel->setHorizontalHeaderItem(4,new QStandardItem("Depth"));
-    tableModel->setItem(0,0,new QStandardItem(QString("Double Bottom")));
-    patternTable_->setModel(tableModel);
 
     connect(patternTable_->selectionModel(), SIGNAL(selectionChanged (const QItemSelection&, const QItemSelection&)),
               this, SLOT(patternTableSelectionChanged(const QItemSelection &,const QItemSelection &)));
 
+    // TODO - The initial selection and connection of pattern match table could use some clean-up/refactoring.
     if(currentPatternMatches_->size() > 0)
     {
         patternTable_->selectRow(0);
+        d_plot->populatePatternShapes(currentPatternMatches_->front());
     }
+
 
 }
 
