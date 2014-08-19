@@ -16,6 +16,7 @@
 #include "MultiPatternScanner.h"
 #include "PatternMatchFilter.h"
 #include "SymetricWedgeScanner.h"
+#include "CupScanner.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -56,10 +57,11 @@ MainWindow::MainWindow(QWidget *parent) :
     // Layout is finished. Populate the pattern plot and pattern selectin table with some data.
 
 
-  //     PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternShape/QCOR_2013_2014_Weekly.csv");
-      PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/VZ_SymTriangle_Weekly_2013_2014.csv");
-
-    currentPatternMatches_ = new PatternMatchList();
+   //    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternShape/QCOR_2013_2014_Weekly.csv");
+ //    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/VZ_SymTriangle_Weekly_2013_2014.csv");
+//    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/CELG_20140501_20140814_Daily.csv");
+    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/SAVE_Weekly_2013.csv");
+     currentPatternMatches_ = new PatternMatchList();
 
     PatternScannerPtr doubleBottomScanner(new DoubleBottomScanner(DoubleRange(7.0,40.0)));
     MultiPatternScanner multiScanner(doubleBottomScanner);
@@ -69,6 +71,12 @@ MainWindow::MainWindow(QWidget *parent) :
     SymetricWedgeScanner wedgeScanner;
     PatternMatchListPtr symetricTriangles = wedgeScanner.scanPatternMatches(chartData);
     currentPatternMatches_->insert(currentPatternMatches_->end(),symetricTriangles->begin(),symetricTriangles->end());
+
+    PatternScannerPtr cupScanner(new CupScanner());
+    MultiPatternScanner multiCupScanner(cupScanner);
+    PatternMatchListPtr cupMatches = multiCupScanner.scanPatternMatches(chartData);
+    currentPatternMatches_->insert(currentPatternMatches_->end(),cupMatches->begin(),cupMatches->end());
+
 
     d_plot->populateChartData(chartData);
 
