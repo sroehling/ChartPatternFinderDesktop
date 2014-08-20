@@ -7,8 +7,10 @@
 #include <QTableView>
 #include <QTableWidget>
 #include <QVBoxLayout>
+#include <QGridLayout>
 #include <QDebug>
 #include "PatternMatchTableView.h"
+#include <QFileDialog>
 
 #include "PeriodValSegment.h"
 #include "DoubleBottomScanner.h"
@@ -33,89 +35,90 @@ MainWindow::MainWindow(QWidget *parent) :
     QToolButton *btnExport = new QToolButton( toolBar );
     btnExport->setText( "Export" );
     btnExport->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
-    connect( btnExport, SIGNAL( clicked() ), d_plot, SLOT( exportPlot() ) );
+ //   connect( btnExport, SIGNAL( clicked() ), d_plot, SLOT( exportPlot() ) );
 
     toolBar->addWidget( typeBox );
     toolBar->addWidget( btnExport );
     addToolBar( toolBar );
 
     patternTable_ = new PatternMatchTableView();
+    instrumentListTableView_ = new InstrumentListTableView();
 
     d_plot = new Plot( this );
     d_plot->setMode( typeBox->currentIndex() );
     connect( typeBox, SIGNAL( currentIndexChanged( int ) ),
         d_plot, SLOT( setMode( int ) ) );
 
-    QVBoxLayout *mainWindowLayout = new QVBoxLayout;
-    mainWindowLayout->addWidget(d_plot);
-    mainWindowLayout->addWidget(patternTable_);
+    QGridLayout *mainWindowGridLayout = new QGridLayout;
+    mainWindowGridLayout->addWidget(instrumentListTableView_,0,0,2,1);
+    mainWindowGridLayout->addWidget(d_plot,0,1,1,1);
+    mainWindowGridLayout->addWidget(patternTable_,1,1,1,1);
+    mainWindowGridLayout->setColumnStretch(0, 10);
+    mainWindowGridLayout->setColumnStretch(1, 30);
+    mainWindowGridLayout->setRowStretch(0,30);
+    mainWindowGridLayout->setRowStretch(1,10);
+
 
     QWidget *centralWindow = new QWidget();
-    centralWindow->setLayout(mainWindowLayout);
+    centralWindow->setLayout(mainWindowGridLayout);
     setCentralWidget(centralWindow);
+
+
+    QString quoteFileDirName = QFileDialog::getExistingDirectory(this, "Select Quotes Directory");
+    if(!quoteFileDirName.isNull()) {
+        instrumentListTableView_->populateFromCSVFiles(quoteFileDirName);
+    }
 
     // Layout is finished. Populate the pattern plot and pattern selectin table with some data.
 
+    connect(patternTable_, SIGNAL(patternMatchSelected (const PatternMatchPtr &)),
+              this, SLOT(patternMatchSelected(const PatternMatchPtr &)));
 
-   //    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternShape/QCOR_2013_2014_Weekly.csv");
- //    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/VZ_SymTriangle_Weekly_2013_2014.csv");
-//    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/CELG_20140501_20140814_Daily.csv");
-    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile("/Users/sroehling/Development/workspace/PatternRecognitionDesktop/lib/PatternRecognitionLib/test/patternScan/SAVE_Weekly_2013.csv");
-     currentPatternMatches_ = new PatternMatchList();
-
-    PatternScannerPtr doubleBottomScanner(new DoubleBottomScanner(DoubleRange(7.0,40.0)));
-    MultiPatternScanner multiScanner(doubleBottomScanner);
-    PatternMatchListPtr doubleBottoms = multiScanner.scanUniquePatternMatches(chartData);
-    currentPatternMatches_->insert(currentPatternMatches_->end(),doubleBottoms->begin(),doubleBottoms->end());
-
-    SymetricWedgeScanner wedgeScanner;
-    PatternMatchListPtr symetricTriangles = wedgeScanner.scanPatternMatches(chartData);
-    currentPatternMatches_->insert(currentPatternMatches_->end(),symetricTriangles->begin(),symetricTriangles->end());
-
-    PatternScannerPtr cupScanner(new CupScanner());
-    MultiPatternScanner multiCupScanner(cupScanner);
-    PatternMatchListPtr cupMatches = multiCupScanner.scanPatternMatches(chartData);
-    currentPatternMatches_->insert(currentPatternMatches_->end(),cupMatches->begin(),cupMatches->end());
-
-
-    d_plot->populateChartData(chartData);
-
-    patternTable_->populatePatternMatches(*currentPatternMatches_);
-
-
-    connect(patternTable_->selectionModel(), SIGNAL(selectionChanged (const QItemSelection&, const QItemSelection&)),
-              this, SLOT(patternTableSelectionChanged(const QItemSelection &,const QItemSelection &)));
-
-    // TODO - The initial selection and connection of pattern match table could use some clean-up/refactoring.
-    if(currentPatternMatches_->size() > 0)
-    {
-        patternTable_->selectRow(0);
-        d_plot->populatePatternShapes(currentPatternMatches_->front());
-    }
-
+    connect(instrumentListTableView_, SIGNAL(instrumentSelected (const QString &)),
+              this, SLOT(instrumentSelected(const QString &)));
 
 }
 
 MainWindow::~MainWindow()
 {
-     delete currentPatternMatches_;
 }
 
-
-void MainWindow::patternTableSelectionChanged (const QItemSelection  &selected,
-                                      const QItemSelection  & )
+void MainWindow::patternMatchSelected(const PatternMatchPtr &selectedMatch)
 {
-    qDebug() << "Pattern Table Selection: " << selected;
+    d_plot->populatePatternShapes(selectedMatch);
 
-    unsigned int currentRow = patternTable_->selectionModel()->selectedRows().first().row();  //QModelIndexList is an ordered list
-    qDebug() << "Pattern Table Selection: selected row =  " << currentRow;
+}
 
-    assert(currentRow< currentPatternMatches_->size());
-    assert(currentPatternMatches_ != NULL);
+void MainWindow::instrumentSelected(const QString &instumentFilePath)
+{
+    qDebug() << "MainWindow: Instrument selected: " << instumentFilePath;
 
-    PatternMatchList::iterator matchListIter = currentPatternMatches_->begin();
-    std::advance(matchListIter,currentRow);
-    PatternMatchPtr currMatch = (*matchListIter);
-    d_plot->populatePatternShapes(currMatch);
+    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile(instumentFilePath.toStdString());
+
+    currentPatternMatches_ = PatternMatchListPtr(new PatternMatchList());
+
+     PatternScannerPtr doubleBottomScanner(new DoubleBottomScanner(DoubleRange(7.0,40.0)));
+     MultiPatternScanner multiScanner(doubleBottomScanner);
+     PatternMatchListPtr doubleBottoms = multiScanner.scanUniquePatternMatches(chartData);
+     currentPatternMatches_->insert(currentPatternMatches_->end(),doubleBottoms->begin(),doubleBottoms->end());
+
+     SymetricWedgeScanner wedgeScanner;
+     PatternMatchListPtr symetricTriangles = wedgeScanner.scanPatternMatches(chartData);
+     currentPatternMatches_->insert(currentPatternMatches_->end(),symetricTriangles->begin(),symetricTriangles->end());
+
+     PatternScannerPtr cupScanner(new CupScanner());
+     MultiPatternScanner multiCupScanner(cupScanner);
+     PatternMatchListPtr cupMatches = multiCupScanner.scanPatternMatches(chartData);
+     currentPatternMatches_->insert(currentPatternMatches_->end(),cupMatches->begin(),cupMatches->end());
+
+     d_plot->populateChartData(chartData);
+
+     patternTable_->populatePatternMatches(currentPatternMatches_);
+
+     if(currentPatternMatches_->size() > 0)
+     {
+         patternTable_->selectRow(0);
+         d_plot->populatePatternShapes(currentPatternMatches_->front());
+     }
 
 }

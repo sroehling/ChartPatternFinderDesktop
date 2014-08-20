@@ -3,6 +3,8 @@
 #include "QDateHelper.h"
 #include <QStandardItemModel>
 #include <QItemSelectionModel>
+#include <QDebug>
+#include <QHeaderView>
 
 
 PatternMatchTableView::PatternMatchTableView()
@@ -10,11 +12,14 @@ PatternMatchTableView::PatternMatchTableView()
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::SingleSelection);
     setEditTriggers(QAbstractItemView::NoEditTriggers); // disable editing
+
+
 }
 
-void PatternMatchTableView::populatePatternMatches(const PatternMatchList &patternMatches)
+void PatternMatchTableView::populatePatternMatches(const PatternMatchListPtr &patternMatches)
 {
-    unsigned int numRows = patternMatches.size();
+    currentPatternMatches_ = patternMatches;
+    unsigned int numRows = patternMatches->size();
     unsigned int numCols = 5;
     QStandardItemModel *tableModel = new QStandardItemModel(numRows, numCols,this);
 
@@ -29,8 +34,8 @@ void PatternMatchTableView::populatePatternMatches(const PatternMatchList &patte
     // Other possible columns: high, low, confirmation
 
     unsigned int rowNum = 0;
-    for(PatternMatchList::const_iterator matchIter = patternMatches.begin();
-        matchIter != patternMatches.end(); matchIter++)
+    for(PatternMatchList::const_iterator matchIter = patternMatches->begin();
+        matchIter != patternMatches->end(); matchIter++)
     {
         unsigned int colNum = 0;
 
@@ -63,10 +68,35 @@ void PatternMatchTableView::populatePatternMatches(const PatternMatchList &patte
 
     setModel(tableModel);
 
-    if(patternMatches.size() > 0)
+    // Automatically resize the columns to match the width of the table view.
+    for (int colNum = 0; colNum < horizontalHeader()->count(); colNum++)
     {
-        selectRow(0);
+        horizontalHeader()->setSectionResizeMode(colNum, QHeaderView::Stretch);
     }
 
 
+    if(patternMatches->size() > 0)
+    {
+        selectRow(0);
+    }
+    connect(selectionModel(), SIGNAL(selectionChanged (const QItemSelection&, const QItemSelection&)),
+              this, SLOT(patternTableSelectionChanged(const QItemSelection &,const QItemSelection &)));
+
 }
+
+void PatternMatchTableView::patternTableSelectionChanged (const QItemSelection  &selected,
+                                      const QItemSelection  & )
+{
+    qDebug() << "Pattern Table Selection: " << selected;
+    unsigned int currentRow = selectionModel()->selectedRows().first().row();  //QModelIndexList is an ordered list
+    qDebug() << "Pattern Table Selection: selected row =  " << currentRow;
+
+    assert(currentRow< currentPatternMatches_->size());
+
+    PatternMatchList::iterator matchListIter = currentPatternMatches_->begin();
+    std::advance(matchListIter,currentRow);
+    PatternMatchPtr currMatch = (*matchListIter);
+
+    emit patternMatchSelected(currMatch);
+}
+

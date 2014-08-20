@@ -10,11 +10,16 @@ class PatternMatchTableView : public QTableView
 
 public:
     explicit PatternMatchTableView();
-    void populatePatternMatches(const PatternMatchList &patternMatches);
-
+    void populatePatternMatches(const PatternMatchListPtr &patternMatches);
 signals:
+    void patternMatchSelected(const PatternMatchPtr &);
 
 public slots:
+    void patternTableSelectionChanged (const QItemSelection  &selected,
+                                          const QItemSelection  & );
+
+private:
+    PatternMatchListPtr currentPatternMatches_;
 
 };
 

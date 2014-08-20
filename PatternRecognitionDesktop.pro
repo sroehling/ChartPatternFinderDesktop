@@ -30,7 +30,8 @@ SOURCES += main.cpp\
     DownTrianglePlotMarker.cpp \
     MainWindow.cpp \
     PatternPlotCurve.cpp \
-    PatternMatchTableView.cpp
+    PatternMatchTableView.cpp \
+    InstrumentListTableView.cpp
 
 HEADERS  += \
     griditem.h \
@@ -43,7 +44,8 @@ HEADERS  += \
     DownTrianglePlotMarker.h \
     MainWindow.h \
     PatternPlotCurve.h \
-    PatternMatchTableView.h
+    PatternMatchTableView.h \
+    InstrumentListTableView.h
 
 
 ## PatternRecognitionLib is linked from the library built within the sub-module

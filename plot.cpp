@@ -90,15 +90,18 @@ void Plot::populateChartData(const PeriodValSegmentPtr &chartData)
     GridItem *gridItem = new GridItem();
     gridItem->attach( this );
 
+    this->detachItems(QwtPlotItem::Rtti_PlotTradingCurve,true);
+
+
     StockChartPlotCurve *chartDataCurve = new StockChartPlotCurve(chartData);
     chartDataCurve->attach( this );
     showItem( chartDataCurve, true );
-
+/*
     DownTrianglePlotMarker *highMarker = new DownTrianglePlotMarker("High",
                     chartData->highestHighVal().periodTime(),
                     chartData->highestHighVal().high());
     highMarker->attach(this);
-
+*/
     replot();
 
  /*
