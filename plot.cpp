@@ -61,14 +61,21 @@ Plot::Plot( QWidget *parent ):
     panner->setMouseButton( Qt::MidButton );
 }
 
+
+void Plot::clearPatternPlots()
+{
+    // Detach and delete any existing plot curves
+    this->detachItems(QwtPlotItem::Rtti_PlotCurve,true);
+
+}
+
 void Plot::populatePatternShapes(const PatternMatchPtr &patternMatch)
 {
     PatternShapeGenerator shapeGen;
     PatternShapePtr patternShape = shapeGen.generateShape(*patternMatch);
     PatternShapePointVectorVectorPtr curveShapes = patternShape->curveShapes();
 
-    // Detach and delete any existing plot curves
-    this->detachItems(QwtPlotItem::Rtti_PlotCurve,true);
+    clearPatternPlots();
 
     // Re-populate with the pattern for the given patternMatch
     for(PatternShapePointVectorVector::iterator curveShapeIter = curveShapes->begin();
@@ -90,6 +97,7 @@ void Plot::populateChartData(const PeriodValSegmentPtr &chartData)
     GridItem *gridItem = new GridItem();
     gridItem->attach( this );
 
+    clearPatternPlots();
     this->detachItems(QwtPlotItem::Rtti_PlotTradingCurve,true);
 
 

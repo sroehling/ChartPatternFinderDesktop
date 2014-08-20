@@ -20,6 +20,7 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void showItem( QwtPlotItem *, bool on );
+    void clearPatternPlots();
 };
 
 #endif

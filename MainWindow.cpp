@@ -108,7 +108,7 @@ void MainWindow::instrumentSelected(const QString &instumentFilePath)
 
      PatternScannerPtr cupScanner(new CupScanner());
      MultiPatternScanner multiCupScanner(cupScanner);
-     PatternMatchListPtr cupMatches = multiCupScanner.scanPatternMatches(chartData);
+     PatternMatchListPtr cupMatches = multiCupScanner.scanUniquePatternMatches(chartData);
      currentPatternMatches_->insert(currentPatternMatches_->end(),cupMatches->begin(),cupMatches->end());
 
      d_plot->populateChartData(chartData);
