@@ -18,6 +18,8 @@
 #include "MultiPatternScanner.h"
 #include "PatternMatchFilter.h"
 #include "SymetricWedgeScanner.h"
+#include "FallingWedgeScanner.h"
+#include "RisingWedgeScanner.h"
 #include "CupScanner.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -105,6 +107,15 @@ void MainWindow::instrumentSelected(const QString &instumentFilePath)
      SymetricWedgeScanner wedgeScanner;
      PatternMatchListPtr symetricTriangles = wedgeScanner.scanPatternMatches(chartData);
      currentPatternMatches_->insert(currentPatternMatches_->end(),symetricTriangles->begin(),symetricTriangles->end());
+
+     FallingWedgeScanner fallingWedgeScanner;
+     PatternMatchListPtr fallingWedges = fallingWedgeScanner.scanPatternMatches(chartData);
+     currentPatternMatches_->insert(currentPatternMatches_->end(),fallingWedges->begin(),fallingWedges->end());
+
+     RisingWedgeScanner risingWedgeScanner;
+     PatternMatchListPtr risingWedges = risingWedgeScanner.scanPatternMatches(chartData);
+     currentPatternMatches_->insert(currentPatternMatches_->end(),risingWedges->begin(),risingWedges->end());
+
 
      PatternScannerPtr cupScanner(new CupScanner());
      MultiPatternScanner multiCupScanner(cupScanner);
