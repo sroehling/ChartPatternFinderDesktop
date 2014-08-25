@@ -32,17 +32,16 @@
 #include "PatternMatchFilter.h"
 #include "SymetricWedgeScanner.h"
 #include <sstream>
+#include <qwt_scale_engine.h>
 
 Plot::Plot( QWidget *parent ):
     QwtPlot( parent )
 {
     setTitle( "Trading Chart" );
 
-    QwtDateScaleDraw *scaleDraw = new StockChartDateScaleDraw( Qt::UTC );
-    QwtDateScaleEngine *scaleEngine = new QwtDateScaleEngine( Qt::UTC );
+    QwtLinearScaleEngine *scaleEngine = new QwtLinearScaleEngine(10);
 
     setAxisTitle( QwtPlot::xBottom, QString( "Time" ) );
-    setAxisScaleDraw( QwtPlot::xBottom, scaleDraw );
     setAxisScaleEngine( QwtPlot::xBottom, scaleEngine );
     setAxisLabelRotation( QwtPlot::xBottom, -50.0 );
     setAxisLabelAlignment( QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom );
@@ -100,39 +99,13 @@ void Plot::populateChartData(const PeriodValSegmentPtr &chartData)
     clearPatternPlots();
     this->detachItems(QwtPlotItem::Rtti_PlotTradingCurve,true);
 
+    QwtDateScaleDraw *scaleDraw = new StockChartDateScaleDraw( Qt::UTC,chartData );
+    setAxisScaleDraw( QwtPlot::xBottom, scaleDraw );
 
     StockChartPlotCurve *chartDataCurve = new StockChartPlotCurve(chartData);
     chartDataCurve->attach( this );
     showItem( chartDataCurve, true );
-/*
-    DownTrianglePlotMarker *highMarker = new DownTrianglePlotMarker("High",
-                    chartData->highestHighVal().periodTime(),
-                    chartData->highestHighVal().high());
-    highMarker->attach(this);
-*/
     replot();
-
- /*
-  *
-  * TODO - Move the example code below to separate classes.
-
-    // Plot some dummy bar chart data for volume. This is
-    QVector<QPointF> volumeData;
-    for ( int i = 0; i < 100; i+=2 )
-    {
-        double barXVal = QwtDate::toDouble( year2010.addDays( (i+1) ));
-        double dummiedUpYVal = 50 + i * 0.25;
-        volumeData += QPointF(barXVal,dummiedUpYVal);
-    }
-
-    QwtPlotBarChart *volumeBars = new QwtPlotBarChart();
-    volumeBars->setTitle( "Volume" );
-    volumeBars->setSpacing(4);
-
-    volumeBars->setSamples(volumeData);
-
-    volumeBars->attach(this);
-*/
 
 }
 

@@ -12,23 +12,16 @@ PatternPlotCurve::PatternPlotCurve(const PatternShapePointVectorPtr &shapeCurve)
 {
 
     setTitle( "Pattern" );
-    setPen( Qt::blue, 2 ),
+    setPen( Qt::blue, 3 ),
     setRenderHint( QwtPlotItem::RenderAntialiased, true );
-
-    QwtSymbol *symbol = new QwtSymbol( QwtSymbol::Ellipse,
-        QBrush( Qt::yellow ), QPen( Qt::red, 1 ), QSize( 4, 4 ) );
-
-    setSymbol( symbol );
 
     QPolygonF shapePoints;
     for(PatternShapePointVector::iterator shapeIter = shapeCurve->begin();
         shapeIter != shapeCurve->end(); shapeIter++)
     {
-        shapePoints << QPointF( QwtDate::toDouble(
-                  QDateHelper::boostToQDateTime((*shapeIter).periodTime())), (*shapeIter).periodVal()
+        shapePoints << QPointF( (*shapeIter).pseudoXVal(), (*shapeIter).periodVal()
                            );
     }
-
 
     setSamples( shapePoints );
 

@@ -31,7 +31,8 @@ SOURCES += main.cpp\
     MainWindow.cpp \
     PatternPlotCurve.cpp \
     PatternMatchTableView.cpp \
-    InstrumentListTableView.cpp
+    InstrumentListTableView.cpp \
+    PseudoTimeOHLCSample.cpp
 
 HEADERS  += \
     griditem.h \
@@ -45,7 +46,8 @@ HEADERS  += \
     MainWindow.h \
     PatternPlotCurve.h \
     PatternMatchTableView.h \
-    InstrumentListTableView.h
+    InstrumentListTableView.h \
+    PseudoTimeOHLCSample.h
 
 
 ## PatternRecognitionLib is linked from the library built within the sub-module
