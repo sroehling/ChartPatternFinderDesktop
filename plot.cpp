@@ -13,6 +13,7 @@
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 #include <qwt_plot_barchart.h>
+#include <assert.h>
 
 #include "plot.h"
 #include "legend.h"
@@ -21,7 +22,7 @@
 #include "StockChartDateScaleDraw.h"
 #include "StockChartPlotZoomer.h"
 #include "StockChartPlotCurve.h"
-#include "DownTrianglePlotMarker.h"
+#include "BreakoutPlotMarker.h"
 #include "PatternPlotCurve.h"
 #include "QDateHelper.h"
 
@@ -65,6 +66,7 @@ void Plot::clearPatternPlots()
 {
     // Detach and delete any existing plot curves
     this->detachItems(QwtPlotItem::Rtti_PlotCurve,true);
+    this->detachItems(QwtPlotItem::Rtti_PlotMarker,true);
 
 }
 
@@ -84,6 +86,13 @@ void Plot::populatePatternShapes(const PatternMatchPtr &patternMatch)
         patternMatchPlot->attach(this);
     }
 
+    if(patternMatch->breakoutInfo)
+    {
+        BreakoutPlotMarker *breakoutPlotMarker = new BreakoutPlotMarker(
+                    patternMatch->breakoutInfo->pseudoXVal(),patternMatch->breakoutInfo->breakoutPrice());
+        breakoutPlotMarker->attach(this);
+    }
+
     replot();
     // TODO - Adjust the plot's visible area to encompass the pattern.
 
@@ -98,6 +107,7 @@ void Plot::populateChartData(const PeriodValSegmentPtr &chartData)
 
     clearPatternPlots();
     this->detachItems(QwtPlotItem::Rtti_PlotTradingCurve,true);
+
 
     QwtDateScaleDraw *scaleDraw = new StockChartDateScaleDraw( Qt::UTC,chartData );
     setAxisScaleDraw( QwtPlot::xBottom, scaleDraw );

@@ -27,12 +27,12 @@ SOURCES += main.cpp\
     StockChartPlotZoomer.cpp \
     StockChartPlotCurve.cpp \
     QDateHelper.cpp \
-    DownTrianglePlotMarker.cpp \
     MainWindow.cpp \
     PatternPlotCurve.cpp \
     PatternMatchTableView.cpp \
     InstrumentListTableView.cpp \
-    PseudoTimeOHLCSample.cpp
+    PseudoTimeOHLCSample.cpp \
+    BreakoutPlotMarker.cpp
 
 HEADERS  += \
     griditem.h \
@@ -42,12 +42,12 @@ HEADERS  += \
     StockChartPlotZoomer.h \
     StockChartPlotCurve.h \
     QDateHelper.h \
-    DownTrianglePlotMarker.h \
     MainWindow.h \
     PatternPlotCurve.h \
     PatternMatchTableView.h \
     InstrumentListTableView.h \
-    PseudoTimeOHLCSample.h
+    PseudoTimeOHLCSample.h \
+    BreakoutPlotMarker.h
 
 
 ## PatternRecognitionLib is linked from the library built within the sub-module
