@@ -20,6 +20,7 @@
 #include "SymetricWedgeScanner.h"
 #include "FallingWedgeScanner.h"
 #include "RisingWedgeScanner.h"
+#include "CupWithHandleScanner.h"
 #include "CupScanner.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -116,11 +117,15 @@ void MainWindow::instrumentSelected(const QString &instumentFilePath)
      PatternMatchListPtr risingWedges = risingWedgeScanner.scanPatternMatches(chartData);
      currentPatternMatches_->insert(currentPatternMatches_->end(),risingWedges->begin(),risingWedges->end());
 
-
      PatternScannerPtr cupScanner(new CupScanner());
      MultiPatternScanner multiCupScanner(cupScanner);
      PatternMatchListPtr cupMatches = multiCupScanner.scanUniquePatternMatches(chartData);
      currentPatternMatches_->insert(currentPatternMatches_->end(),cupMatches->begin(),cupMatches->end());
+
+      PatternScannerPtr cupWithHandleScanner(new CupWithHandleScanner());
+     MultiPatternScanner multiCupWithHandleScanner(cupWithHandleScanner);
+     PatternMatchListPtr cupWithHandleMatches = multiCupWithHandleScanner.scanUniquePatternMatches(chartData);
+     currentPatternMatches_->insert(currentPatternMatches_->end(),cupWithHandleMatches->begin(),cupWithHandleMatches->end());
 
      d_plot->populateChartData(chartData);
 
