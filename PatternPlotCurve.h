@@ -7,7 +7,7 @@
 class PatternPlotCurve : public QwtPlotCurve
 {
 public:
-    PatternPlotCurve(const PatternShapePointVectorPtr &shapeCurve);
+    PatternPlotCurve(const PatternShapePointVectorPtr &shapeCurve, bool doCurveFit);
 };
 
 #endif // PATTERNPLOTCURVE_H

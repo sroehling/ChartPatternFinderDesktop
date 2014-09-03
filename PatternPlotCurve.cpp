@@ -8,7 +8,7 @@
 #include "PatternShape.h"
 
 
-PatternPlotCurve::PatternPlotCurve(const PatternShapePointVectorPtr &shapeCurve)
+PatternPlotCurve::PatternPlotCurve(const PatternShapePointVectorPtr &shapeCurve, bool doCurveFit)
 {
 
     setTitle( "Pattern" );
@@ -23,6 +23,7 @@ PatternPlotCurve::PatternPlotCurve(const PatternShapePointVectorPtr &shapeCurve)
                            );
     }
 
+    setCurveAttribute(QwtPlotCurve::Fitted,doCurveFit);
     setSamples( shapePoints );
 
 }

@@ -82,9 +82,20 @@ void Plot::populatePatternShapes(const PatternMatchPtr &patternMatch)
     for(PatternShapePointVectorVector::iterator curveShapeIter = curveShapes->begin();
         curveShapeIter != curveShapes->end(); curveShapeIter++)
     {
-        QwtPlotCurve *patternMatchPlot = new PatternPlotCurve(*curveShapeIter);
+        bool doCurveFit = true;
+        QwtPlotCurve *patternMatchPlot = new PatternPlotCurve(*curveShapeIter,doCurveFit);
         patternMatchPlot->attach(this);
     }
+
+    PatternShapePointVectorVectorPtr lineShapes = patternShape->lineShapes();
+    for(PatternShapePointVectorVector::iterator lineShapeIter = lineShapes->begin();
+        lineShapeIter != lineShapes->end(); lineShapeIter++)
+    {
+        bool doCurveFit = false;
+        QwtPlotCurve *patternMatchPlot = new PatternPlotCurve(*lineShapeIter,doCurveFit);
+        patternMatchPlot->attach(this);
+    }
+
 
     if(patternMatch->breakoutInfo)
     {
