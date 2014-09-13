@@ -23,6 +23,7 @@
 #include "CupWithHandleScanner.h"
 #include "CupWithoutHandleScanner.h"
 #include "FlatBaseScanner.h"
+#include "PivotHighScanner.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -101,9 +102,12 @@ void MainWindow::instrumentSelected(const QString &instumentFilePath)
 
     currentPatternMatches_ = PatternMatchListPtr(new PatternMatchList());
 
+    PeriodValCltnIterListPtr pivotHighBeginIters = PivotHighScanner().scanPivotHighBeginIters(chartData);
+
+
      PatternScannerPtr doubleBottomScanner(new DoubleBottomScanner(DoubleRange(7.0,40.0)));
      MultiPatternScanner multiScanner(doubleBottomScanner);
-     PatternMatchListPtr doubleBottoms = multiScanner.scanUniquePatternMatches(chartData);
+     PatternMatchListPtr doubleBottoms = multiScanner.scanUniquePatternMatches(chartData,pivotHighBeginIters);
      currentPatternMatches_->insert(currentPatternMatches_->end(),doubleBottoms->begin(),doubleBottoms->end());
 
      SymetricWedgeScanner wedgeScanner;
@@ -124,12 +128,12 @@ void MainWindow::instrumentSelected(const QString &instumentFilePath)
 
      PatternScannerPtr cupWithoutHandleScanner(new CupWithoutHandleScanner());
      MultiPatternScanner multiCupScanner(cupWithoutHandleScanner);
-     PatternMatchListPtr cupWithoutHandleMatches = multiCupScanner.scanUniquePatternMatches(chartData);
+     PatternMatchListPtr cupWithoutHandleMatches = multiCupScanner.scanUniquePatternMatches(chartData,pivotHighBeginIters);
      currentPatternMatches_->insert(currentPatternMatches_->end(),cupWithoutHandleMatches->begin(),cupWithoutHandleMatches->end());
 
       PatternScannerPtr cupWithHandleScanner(new CupWithHandleScanner());
      MultiPatternScanner multiCupWithHandleScanner(cupWithHandleScanner);
-     PatternMatchListPtr cupWithHandleMatches = multiCupWithHandleScanner.scanUniquePatternMatches(chartData);
+     PatternMatchListPtr cupWithHandleMatches = multiCupWithHandleScanner.scanUniquePatternMatches(chartData,pivotHighBeginIters);
      currentPatternMatches_->insert(currentPatternMatches_->end(),cupWithHandleMatches->begin(),cupWithHandleMatches->end());
 
      d_plot->populateChartData(chartData);
