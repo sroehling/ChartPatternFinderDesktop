@@ -17,6 +17,7 @@ public:
     PseudoTimeOHLCSample(double pseudoTime, double realTime,
                          double open, double high,
                          double low, double close);
+    double realTime() const { return realTime_; }
 };
 
 #endif // PSEUDOTIMEOHLCSAMPLE_H

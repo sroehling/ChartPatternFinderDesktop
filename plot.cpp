@@ -31,7 +31,7 @@
 #include "PatternShapeGenerator.h"
 #include "MultiPatternScanner.h"
 #include "PatternMatchFilter.h"
-#include "SymetricWedgeScanner.h"
+#include "SymetricTriangleScanner.h"
 #include <sstream>
 #include <qwt_scale_engine.h>
 

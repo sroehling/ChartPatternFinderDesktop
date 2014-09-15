@@ -17,9 +17,9 @@
 #include "PatternShapeGenerator.h"
 #include "MultiPatternScanner.h"
 #include "PatternMatchFilter.h"
-#include "SymetricWedgeScanner.h"
-#include "FallingWedgeScanner.h"
-#include "RisingWedgeScanner.h"
+#include "SymetricTriangleScanner.h"
+#include "DescendingTriangleScanner.h"
+#include "AscendingTriangleScanner.h"
 #include "CupWithHandleScanner.h"
 #include "CupWithoutHandleScanner.h"
 #include "FlatBaseScanner.h"
@@ -110,21 +110,21 @@ void MainWindow::instrumentSelected(const QString &instumentFilePath)
      PatternMatchListPtr doubleBottoms = multiScanner.scanUniquePatternMatches(chartData,pivotHighBeginIters);
      currentPatternMatches_->insert(currentPatternMatches_->end(),doubleBottoms->begin(),doubleBottoms->end());
 
-     SymetricWedgeScanner wedgeScanner;
+     SymetricTriangleScanner wedgeScanner;
      PatternMatchListPtr symetricTriangles = wedgeScanner.scanPatternMatches(chartData);
      currentPatternMatches_->insert(currentPatternMatches_->end(),symetricTriangles->begin(),symetricTriangles->end());
 
-     FallingWedgeScanner fallingWedgeScanner;
-     PatternMatchListPtr fallingWedges = fallingWedgeScanner.scanPatternMatches(chartData);
-     currentPatternMatches_->insert(currentPatternMatches_->end(),fallingWedges->begin(),fallingWedges->end());
+     DescendingTriangleScanner descTriangleScanner;
+     PatternMatchListPtr descTriangle = descTriangleScanner.scanPatternMatches(chartData);
+     currentPatternMatches_->insert(currentPatternMatches_->end(),descTriangle->begin(),descTriangle->end());
 
      FlatBaseScanner flatBaseScanner;
      PatternMatchListPtr flatBases = flatBaseScanner.scanPatternMatches(chartData);
      currentPatternMatches_->insert(currentPatternMatches_->end(),flatBases->begin(),flatBases->end());
 
-     RisingWedgeScanner risingWedgeScanner;
-     PatternMatchListPtr risingWedges = risingWedgeScanner.scanPatternMatches(chartData);
-     currentPatternMatches_->insert(currentPatternMatches_->end(),risingWedges->begin(),risingWedges->end());
+     AscendingTriangleScanner ascendingTriangleScanner;
+     PatternMatchListPtr ascTriangles = ascendingTriangleScanner.scanPatternMatches(chartData);
+     currentPatternMatches_->insert(currentPatternMatches_->end(),ascTriangles->begin(),ascTriangles->end());
 
      PatternScannerPtr cupWithoutHandleScanner(new CupWithoutHandleScanner());
      MultiPatternScanner multiCupScanner(cupWithoutHandleScanner);
