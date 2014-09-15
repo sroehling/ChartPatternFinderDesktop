@@ -22,7 +22,7 @@
 #include "AscendingTriangleScanner.h"
 #include "CupWithHandleScanner.h"
 #include "CupWithoutHandleScanner.h"
-#include "FlatBaseScanner.h"
+#include "RectangleScanner.h"
 #include "PivotHighScanner.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -118,7 +118,7 @@ void MainWindow::instrumentSelected(const QString &instumentFilePath)
      PatternMatchListPtr descTriangle = descTriangleScanner.scanPatternMatches(chartData);
      currentPatternMatches_->insert(currentPatternMatches_->end(),descTriangle->begin(),descTriangle->end());
 
-     FlatBaseScanner flatBaseScanner;
+     RectangleScanner flatBaseScanner;
      PatternMatchListPtr flatBases = flatBaseScanner.scanPatternMatches(chartData);
      currentPatternMatches_->insert(currentPatternMatches_->end(),flatBases->begin(),flatBases->end());
 
