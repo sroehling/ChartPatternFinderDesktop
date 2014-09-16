@@ -11,6 +11,7 @@ class PatternMatchTableView : public QTableView
 public:
     explicit PatternMatchTableView();
     void populatePatternMatches(const PatternMatchListPtr &patternMatches);
+    const PatternMatchListPtr currentPatternMatches() const { return currentPatternMatches_; }
 signals:
     void patternMatchSelected(const PatternMatchPtr &);
 

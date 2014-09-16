@@ -29,7 +29,6 @@ public slots:
 private:
     Plot *d_plot;
     PatternMatchTableView* patternTable_;
-    PatternMatchListPtr currentPatternMatches_;
     InstrumentListTableView *instrumentListTableView_;
 };
 

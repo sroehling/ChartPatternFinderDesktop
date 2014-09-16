@@ -5,7 +5,9 @@
 #include <QItemSelectionModel>
 #include <QDebug>
 #include <QHeaderView>
+#include "PatternMatchFilter.h"
 
+using namespace patternMatchFilter;
 
 PatternMatchTableView::PatternMatchTableView()
 {
@@ -18,7 +20,9 @@ PatternMatchTableView::PatternMatchTableView()
 
 void PatternMatchTableView::populatePatternMatches(const PatternMatchListPtr &patternMatches)
 {
-    currentPatternMatches_ = patternMatches;
+    PatternMatchListPtr sortedMatches = sortPatternMatches(patternMatches,ReverseSortPatternMatchByEndTimeThenLength());
+    currentPatternMatches_ = sortedMatches;
+
     unsigned int numRows = patternMatches->size();
     unsigned int numCols = 5;
     QStandardItemModel *tableModel = new QStandardItemModel(numRows, numCols,this);
@@ -33,9 +37,11 @@ void PatternMatchTableView::populatePatternMatches(const PatternMatchListPtr &pa
 
     // Other possible columns: high, low, confirmation
 
+
+
     unsigned int rowNum = 0;
-    for(PatternMatchList::const_iterator matchIter = patternMatches->begin();
-        matchIter != patternMatches->end(); matchIter++)
+    for(PatternMatchList::const_iterator matchIter = sortedMatches->begin();
+        matchIter != sortedMatches->end(); matchIter++)
     {
         unsigned int colNum = 0;
 
