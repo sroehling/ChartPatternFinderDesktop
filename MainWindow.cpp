@@ -24,6 +24,8 @@
 #include "CupWithoutHandleScanner.h"
 #include "RectangleScanner.h"
 #include "PivotHighScanner.h"
+#include "RisingWedgeScanner.h"
+#include "FallingWedgeScanner.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -121,6 +123,14 @@ void MainWindow::instrumentSelected(const QString &instumentFilePath)
      RectangleScanner flatBaseScanner;
      PatternMatchListPtr flatBases = flatBaseScanner.scanPatternMatches(chartData);
      currentPatternMatches_->insert(currentPatternMatches_->end(),flatBases->begin(),flatBases->end());
+
+     RisingWedgeScanner risingWedgeScanner;
+     PatternMatchListPtr risingWedges = risingWedgeScanner.scanPatternMatches(chartData);
+     currentPatternMatches_->insert(currentPatternMatches_->end(),risingWedges->begin(),risingWedges->end());
+
+     FallingWedgeScanner fallingWedgeScanner;
+     PatternMatchListPtr fallingWedges = fallingWedgeScanner.scanPatternMatches(chartData);
+     currentPatternMatches_->insert(currentPatternMatches_->end(),fallingWedges->begin(),fallingWedges->end());
 
      AscendingTriangleScanner ascendingTriangleScanner;
      PatternMatchListPtr ascTriangles = ascendingTriangleScanner.scanPatternMatches(chartData);
