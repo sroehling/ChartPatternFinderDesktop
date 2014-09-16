@@ -126,6 +126,11 @@ void Plot::populateChartData(const PeriodValSegmentPtr &chartData)
     StockChartPlotCurve *chartDataCurve = new StockChartPlotCurve(chartData);
     chartDataCurve->attach( this );
     showItem( chartDataCurve, true );
+
+    // Rescale the plot based upon the boundaries of the current chart data
+    setAxisAutoScale( QwtPlot::yLeft );
+    setAxisAutoScale( QwtPlot::xBottom);
+
     replot();
 
 }
