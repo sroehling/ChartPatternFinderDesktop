@@ -12,6 +12,9 @@ InstrumentListTableView::InstrumentListTableView() :
     setSelectionMode(QAbstractItemView::SingleSelection);
     setEditTriggers(QAbstractItemView::NoEditTriggers); // disable editing
 
+    // Hide the row numbers
+    verticalHeader()->setVisible(false);
+
 }
 
 

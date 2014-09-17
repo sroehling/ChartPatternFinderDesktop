@@ -42,12 +42,10 @@ Plot::Plot( QWidget *parent ):
 
     QwtLinearScaleEngine *scaleEngine = new QwtLinearScaleEngine(10);
 
-    setAxisTitle( QwtPlot::xBottom, QString( "Time" ) );
     setAxisScaleEngine( QwtPlot::xBottom, scaleEngine );
     setAxisLabelRotation( QwtPlot::xBottom, -50.0 );
     setAxisLabelAlignment( QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom );
 
-    setAxisTitle( QwtPlot::yLeft, QString( "Price" ) );
 
     // LeftButton for the zooming
     // MidButton for the panning

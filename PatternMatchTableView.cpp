@@ -15,6 +15,9 @@ PatternMatchTableView::PatternMatchTableView()
     setSelectionMode(QAbstractItemView::SingleSelection);
     setEditTriggers(QAbstractItemView::NoEditTriggers); // disable editing
 
+    // Hide the row numbers
+    verticalHeader()->setVisible(false);
+
 
 }
 
@@ -74,8 +77,13 @@ void PatternMatchTableView::populatePatternMatches(const PatternMatchListPtr &pa
 
     setModel(tableModel);
 
-    // Automatically resize the columns to match the width of the table view.
-    for (int colNum = 0; colNum < horizontalHeader()->count(); colNum++)
+
+    // The first column always needs to show the entire pattern type. The remaining
+    // columns can stretch to the size of the window/grid.
+    horizontalHeader()->setSectionResizeMode(0,QHeaderView::ResizeToContents);
+
+    // Automatically resize the remaining columns to match the width of the table view.
+    for (int colNum = 1; colNum < horizontalHeader()->count(); colNum++)
     {
         horizontalHeader()->setSectionResizeMode(colNum, QHeaderView::Stretch);
     }
