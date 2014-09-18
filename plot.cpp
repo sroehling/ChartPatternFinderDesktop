@@ -46,6 +46,10 @@ Plot::Plot( QWidget *parent ):
     setAxisLabelRotation( QwtPlot::xBottom, -50.0 );
     setAxisLabelAlignment( QwtPlot::xBottom, Qt::AlignLeft | Qt::AlignBottom );
 
+    // The following is needed to properly adjust the RHS of the X axis. Otherwise,
+    // there is space on the RHS.
+    axisScaleEngine(QwtPlot::xBottom)->setAttribute(QwtScaleEngine::Floating,true);
+
 
     // LeftButton for the zooming
     // MidButton for the panning
