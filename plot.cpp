@@ -135,6 +135,11 @@ void Plot::populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo)
 
     replot();
 
+    // The following has the effect of freezing the maximum zoom coordinates to the
+    // initial scale of the chart. This needs to happen after replot(). The scale
+    // for zooming needs to be reset whenever the chart data changes.
+    plotZoomer_->setZoomBase(false);
+
 }
 
 void Plot::setMode( int style )
