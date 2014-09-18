@@ -88,7 +88,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if(!appSettings_->contains(APP_SETTINGS_KEY_QUOTES_DIR))
     {
-        chooseQuotesDir();
+        bool requireDirChoice = true;
+        chooseQuotesDir(requireDirChoice);
     }
     QString quoteFileDirName = appSettings_->value(APP_SETTINGS_KEY_QUOTES_DIR).toString();
 
@@ -109,21 +110,33 @@ MainWindow::MainWindow(QWidget *parent) :
     instrumentListTableView_->populateFromCSVFiles(quoteFileDirName);
 }
 
-QString MainWindow::chooseQuotesDir()
+QString MainWindow::chooseQuotesDir(bool requireChoice)
 {
     QString quoteFileDirName = QFileDialog::getExistingDirectory(this, "Select Quotes Directory");
-    while(quoteFileDirName.isNull()) {
-        quoteFileDirName = QFileDialog::getExistingDirectory(this, "Select Quotes Directory");
+    if(requireChoice)
+    {
+       while(quoteFileDirName.isNull()) {
+            quoteFileDirName = QFileDialog::getExistingDirectory(this, "Select Quotes Directory");
+       }
     }
-    appSettings_->setValue(APP_SETTINGS_KEY_QUOTES_DIR,QVariant(quoteFileDirName));
+    if(!quoteFileDirName.isNull())
+    {
+        // Only propagate the selection to the app settings if a new selection was made.
+        appSettings_->setValue(APP_SETTINGS_KEY_QUOTES_DIR,QVariant(quoteFileDirName));
+    }
     return quoteFileDirName;
 }
 
 void MainWindow::actionSelectQuotesDir()
 {
-    QString quoteFileDirName = chooseQuotesDir();
+    bool requireDirChoice = false;
+    QString quoteFileDirName = chooseQuotesDir(requireDirChoice);
 
-    instrumentListTableView_->populateFromCSVFiles(quoteFileDirName);
+    if(!quoteFileDirName.isNull())
+    {
+        // Only update the instrument list if a new choice was made
+        instrumentListTableView_->populateFromCSVFiles(quoteFileDirName);
+    }
 }
 
 MainWindow::~MainWindow()

@@ -57,6 +57,18 @@ Plot::Plot( QWidget *parent ):
 
     QwtPlotPanner *panner = new QwtPlotPanner( canvas() );
     panner->setMouseButton( Qt::MidButton );
+
+    // Attach a dotted-line grid to the plot.
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    grid->setItemAttribute(grid->Legend, false);
+    grid->setPen(QColor(Qt::gray), 0.0, Qt::PenStyle::DotLine);
+    grid->attach(this);
+
+    // Set the background color to white
+    setAutoFillBackground( true );
+    setPalette( Qt::white );
+    setCanvasBackground( Qt::white );
+
 }
 
 
@@ -111,8 +123,6 @@ void Plot::populatePatternShapes(const PatternMatchPtr &patternMatch)
 
 void Plot::populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo)
 {
-    GridItem *gridItem = new GridItem();
-    gridItem->attach( this );
 
     clearPatternPlots();
     this->detachItems(QwtPlotItem::Rtti_PlotTradingCurve,true);

@@ -24,7 +24,7 @@ class MainWindow : public QMainWindow
 
 private:
     void initMenus();
-    QString chooseQuotesDir();
+    QString chooseQuotesDir(bool requireChoice);
 
     QSettingsPtr appSettings_;
     Plot *d_plot;
