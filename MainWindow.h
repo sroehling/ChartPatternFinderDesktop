@@ -24,11 +24,15 @@ class MainWindow : public QMainWindow
 
 private:
     void initMenus();
+    QString chooseQuotesDir();
 
     QSettingsPtr appSettings_;
     Plot *d_plot;
     PatternMatchTableView* patternTable_;
     InstrumentListTableView *instrumentListTableView_;
+
+private slots:
+     void actionSelectQuotesDir();
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -37,7 +41,6 @@ public:
 public slots:
     void instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo);
     void patternMatchSelected(const PatternMatchPtr &selectedMatch);
-    void selectQuotesDir();
 };
 
 #endif // MAINWINDOW_H

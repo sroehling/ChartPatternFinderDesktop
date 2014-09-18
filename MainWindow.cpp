@@ -29,6 +29,7 @@
 #include "PivotHighScanner.h"
 #include "RisingWedgeScanner.h"
 #include "FallingWedgeScanner.h"
+#include <QApplication>
 
 #define APP_SETTINGS_KEY_QUOTES_DIR "QUOTES_DIR"
 
@@ -37,7 +38,7 @@ void MainWindow::initMenus()
     QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
     QAction *selectQuotesDirAction = new QAction(tr("&Select Quotes Directory..."), this);
     fileMenu->addAction(selectQuotesDirAction);
-    connect(selectQuotesDirAction, SIGNAL(triggered()), this, SLOT(selectQuotesDir()));
+    connect(selectQuotesDirAction, SIGNAL(triggered()), this, SLOT(actionSelectQuotesDir()));
 }
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -85,16 +86,11 @@ MainWindow::MainWindow(QWidget *parent) :
     centralWindow->setLayout(mainWindowGridLayout);
     setCentralWidget(centralWindow);
 
-
     if(!appSettings_->contains(APP_SETTINGS_KEY_QUOTES_DIR))
     {
-        selectQuotesDir();
+        chooseQuotesDir();
     }
-    else
-    {
-        QString quoteFileDirName = appSettings_->value(APP_SETTINGS_KEY_QUOTES_DIR).toString();
-        instrumentListTableView_->populateFromCSVFiles(quoteFileDirName);
-    }
+    QString quoteFileDirName = appSettings_->value(APP_SETTINGS_KEY_QUOTES_DIR).toString();
 
 
     initMenus();
@@ -107,15 +103,25 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(instrumentListTableView_, SIGNAL(instrumentSelected (const InstrumentSelectionInfoPtr &)),
               this, SLOT(instrumentSelected(const InstrumentSelectionInfoPtr &)));
 
+    // The last thing to do during initialization is to set the quotes directory on the instrument list.
+    // This needs to happen after connecting the slots, since this will initially select the first
+    // instrument in the list, emitting the instrumentSelected signal from the instrument list.
+    instrumentListTableView_->populateFromCSVFiles(quoteFileDirName);
 }
 
-void MainWindow::selectQuotesDir()
+QString MainWindow::chooseQuotesDir()
 {
     QString quoteFileDirName = QFileDialog::getExistingDirectory(this, "Select Quotes Directory");
     while(quoteFileDirName.isNull()) {
         quoteFileDirName = QFileDialog::getExistingDirectory(this, "Select Quotes Directory");
     }
     appSettings_->setValue(APP_SETTINGS_KEY_QUOTES_DIR,QVariant(quoteFileDirName));
+    return quoteFileDirName;
+}
+
+void MainWindow::actionSelectQuotesDir()
+{
+    QString quoteFileDirName = chooseQuotesDir();
 
     instrumentListTableView_->populateFromCSVFiles(quoteFileDirName);
 }

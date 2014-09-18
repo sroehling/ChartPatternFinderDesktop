@@ -12,6 +12,8 @@ class InstrumentListTableView : public QTableView
 private:
     QStringList fileList_;
     QDir dir_;
+    void selectInstrument(int instrNum);
+
 public:
     explicit InstrumentListTableView();
     void populateFromCSVFiles(QString quoteFilePath);

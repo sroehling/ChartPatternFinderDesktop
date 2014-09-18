@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QHeaderView>
 #include "InstrumentSelectionInfo.h"
+#include <assert.h>
 
 InstrumentListTableView::InstrumentListTableView() :
     QTableView()
@@ -59,6 +60,31 @@ void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
     // selectionModel() will be NULL until the tableModel is set.
     connect(selectionModel(), SIGNAL(selectionChanged (const QItemSelection&, const QItemSelection&)),
               this, SLOT(instrumentSelectionChanged(const QItemSelection &,const QItemSelection &)));
+
+    if(fileList_.size()>0)
+    {
+        // initially select the first instrument. This must happen after the slot connection
+        // is established, since this will cause instrumentSelectionChanged() to be called.
+        selectRow(0);
+    }
+}
+
+void InstrumentListTableView::selectInstrument(int instrNum)
+{
+    assert(instrNum >=0);
+    assert(instrNum < fileList_.size());
+
+    // Show the name of the file without the .csv suffix.
+    QString instrumentLabel(fileList_[instrNum]);
+    instrumentLabel.replace(".csv","");
+
+    QString instrFilePath(dir_.absoluteFilePath(fileList_[instrNum]));
+    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile(instrFilePath.toStdString());
+
+    InstrumentSelectionInfoPtr selInfo(new InstrumentSelectionInfo(instrumentLabel,chartData));
+
+    emit instrumentSelected(selInfo);
+
 }
 
 void InstrumentListTableView::instrumentSelectionChanged (const QItemSelection  &,
@@ -67,14 +93,5 @@ void InstrumentListTableView::instrumentSelectionChanged (const QItemSelection  
     unsigned int currentRow = selectionModel()->selectedRows().first().row();  //QModelIndexList is an ordered list
     qDebug() << "Instrument List Table Selection: " << fileList_[currentRow];
 
-    // Show the name of the file without the .csv suffix.
-    QString instrumentLabel(fileList_[currentRow]);
-    instrumentLabel.replace(".csv","");
-
-    QString instrFilePath(dir_.absoluteFilePath(fileList_[currentRow]));
-    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile(instrFilePath.toStdString());
-
-    InstrumentSelectionInfoPtr selInfo(new InstrumentSelectionInfo(instrumentLabel,chartData));
-
-    emit instrumentSelected(selInfo);
+    selectInstrument(currentRow);
 }
