@@ -5,18 +5,18 @@
 #include "PatternMatch.h"
 #include "PeriodValSegment.h"
 #include "StockChartPlotZoomer.h"
+#include "InstrumentSelectionInfo.h"
 
 class Plot: public QwtPlot
 {
     Q_OBJECT
-
 
 private:
     StockChartPlotZoomer *plotZoomer_;
 
 public:
     Plot( QWidget * = NULL );
-    void populateChartData(const PeriodValSegmentPtr &chartData);
+    void populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo);
     void populatePatternShapes(const PatternMatchPtr &patternMatch);
 
 public Q_SLOTS:

@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     PatternMatchTableView.cpp \
     InstrumentListTableView.cpp \
     PseudoTimeOHLCSample.cpp \
-    BreakoutPlotMarker.cpp
+    BreakoutPlotMarker.cpp \
+    InstrumentSelectionInfo.cpp
 
 HEADERS  += \
     griditem.h \
@@ -47,7 +48,8 @@ HEADERS  += \
     PatternMatchTableView.h \
     InstrumentListTableView.h \
     PseudoTimeOHLCSample.h \
-    BreakoutPlotMarker.h
+    BreakoutPlotMarker.h \
+    InstrumentSelectionInfo.h
 
 
 ## PatternRecognitionLib is linked from the library built within the sub-module

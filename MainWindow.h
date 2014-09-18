@@ -23,7 +23,7 @@ public:
     ~MainWindow();
 
 public slots:
-    void instrumentSelected(const QString &instumentFilePath);
+    void instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo);
     void patternMatchSelected(const PatternMatchPtr &selectedMatch);
 
 private:

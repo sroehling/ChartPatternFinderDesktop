@@ -3,6 +3,7 @@
 
 #include <QTableView>
 #include <QDir>
+#include "InstrumentSelectionInfo.h"
 
 class InstrumentListTableView : public QTableView
 {
@@ -19,7 +20,7 @@ public slots:
     void instrumentSelectionChanged (const QItemSelection  &selected,
                                           const QItemSelection  & );
 signals:
-    void instrumentSelected(const QString &instrumentPath);
+    void instrumentSelected(const InstrumentSelectionInfoPtr &instrSelInfo);
 
 public slots:
 

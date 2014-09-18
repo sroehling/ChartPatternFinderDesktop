@@ -81,8 +81,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(patternTable_, SIGNAL(patternMatchSelected (const PatternMatchPtr &)),
               this, SLOT(patternMatchSelected(const PatternMatchPtr &)));
 
-    connect(instrumentListTableView_, SIGNAL(instrumentSelected (const QString &)),
-              this, SLOT(instrumentSelected(const QString &)));
+    connect(instrumentListTableView_, SIGNAL(instrumentSelected (const InstrumentSelectionInfoPtr &)),
+              this, SLOT(instrumentSelected(const InstrumentSelectionInfoPtr &)));
 
 }
 
@@ -96,11 +96,10 @@ void MainWindow::patternMatchSelected(const PatternMatchPtr &selectedMatch)
 
 }
 
-void MainWindow::instrumentSelected(const QString &instumentFilePath)
+void MainWindow::instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo)
 {
-    qDebug() << "MainWindow: Instrument selected: " << instumentFilePath;
 
-    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile(instumentFilePath.toStdString());
+    PeriodValSegmentPtr chartData = instrSelectionInfo->chartData();
 
     PatternMatchListPtr currentPatternMatches = PatternMatchListPtr(new PatternMatchList());
 
@@ -146,7 +145,7 @@ void MainWindow::instrumentSelected(const QString &instumentFilePath)
      PatternMatchListPtr cupWithHandleMatches = multiCupWithHandleScanner.scanUniquePatternMatches(chartData,pivotHighBeginIters);
      currentPatternMatches->insert(currentPatternMatches->end(),cupWithHandleMatches->begin(),cupWithHandleMatches->end());
 
-     d_plot->populateChartData(chartData);
+     d_plot->populateChartData(instrSelectionInfo);
 
      patternTable_->populatePatternMatches(currentPatternMatches);
 

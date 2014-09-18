@@ -38,7 +38,7 @@
 Plot::Plot( QWidget *parent ):
     QwtPlot( parent )
 {
-    setTitle( "Trading Chart" );
+    setTitle( "" );
 
     QwtLinearScaleEngine *scaleEngine = new QwtLinearScaleEngine(10);
 
@@ -109,7 +109,7 @@ void Plot::populatePatternShapes(const PatternMatchPtr &patternMatch)
 
 
 
-void Plot::populateChartData(const PeriodValSegmentPtr &chartData)
+void Plot::populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo)
 {
     GridItem *gridItem = new GridItem();
     gridItem->attach( this );
@@ -117,11 +117,12 @@ void Plot::populateChartData(const PeriodValSegmentPtr &chartData)
     clearPatternPlots();
     this->detachItems(QwtPlotItem::Rtti_PlotTradingCurve,true);
 
+    setTitle(instrSelInfo->instrumentName());
 
-    QwtDateScaleDraw *scaleDraw = new StockChartDateScaleDraw( Qt::UTC,chartData );
+    QwtDateScaleDraw *scaleDraw = new StockChartDateScaleDraw( Qt::UTC,instrSelInfo->chartData() );
     setAxisScaleDraw( QwtPlot::xBottom, scaleDraw );
 
-    StockChartPlotCurve *chartDataCurve = new StockChartPlotCurve(chartData);
+    StockChartPlotCurve *chartDataCurve = new StockChartPlotCurve(instrSelInfo->chartData());
     chartDataCurve->attach( this );
     showItem( chartDataCurve, true );
 
@@ -130,7 +131,7 @@ void Plot::populateChartData(const PeriodValSegmentPtr &chartData)
     setAxisAutoScale( QwtPlot::xBottom);
 
     // Update the chart data for the plot zoomer, so it can show a curser with appropriate data.
-    plotZoomer_->setChartData(chartData);
+    plotZoomer_->setChartData(instrSelInfo->chartData());
 
     replot();
 

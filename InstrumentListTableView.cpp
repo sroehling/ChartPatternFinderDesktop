@@ -3,7 +3,7 @@
 #include <QStandardItemModel>
 #include <QDebug>
 #include <QHeaderView>
-
+#include "InstrumentSelectionInfo.h"
 
 InstrumentListTableView::InstrumentListTableView() :
     QTableView()
@@ -38,7 +38,12 @@ void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
     for (int rowNum=0; rowNum<fileList_.count(); rowNum++)
     {
         unsigned int colNum = 0;
-        tableModel->setItem(rowNum,colNum,new QStandardItem(QString(fileList_[rowNum])));
+
+        // Show the name of the file without the .csv suffix.
+        QString instrumentLabel(fileList_[rowNum]);
+        instrumentLabel.replace(".csv","");
+
+        tableModel->setItem(rowNum,colNum,new QStandardItem(instrumentLabel));
         qDebug() << "Found file (full path): " << dir_.absoluteFilePath(fileList_[rowNum]);
         qDebug() << "Found file: " << fileList_[rowNum];
     }
@@ -51,8 +56,6 @@ void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
         horizontalHeader()->setSectionResizeMode(colNum, QHeaderView::Stretch);
     }
 
- //   resizeColumnsToContents();
-
     // selectionModel() will be NULL until the tableModel is set.
     connect(selectionModel(), SIGNAL(selectionChanged (const QItemSelection&, const QItemSelection&)),
               this, SLOT(instrumentSelectionChanged(const QItemSelection &,const QItemSelection &)));
@@ -64,5 +67,14 @@ void InstrumentListTableView::instrumentSelectionChanged (const QItemSelection  
     unsigned int currentRow = selectionModel()->selectedRows().first().row();  //QModelIndexList is an ordered list
     qDebug() << "Instrument List Table Selection: " << fileList_[currentRow];
 
-    emit instrumentSelected(dir_.absoluteFilePath(fileList_[currentRow]));
+    // Show the name of the file without the .csv suffix.
+    QString instrumentLabel(fileList_[currentRow]);
+    instrumentLabel.replace(".csv","");
+
+    QString instrFilePath(dir_.absoluteFilePath(fileList_[currentRow]));
+    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile(instrFilePath.toStdString());
+
+    InstrumentSelectionInfoPtr selInfo(new InstrumentSelectionInfo(instrumentLabel,chartData));
+
+    emit instrumentSelected(selInfo);
 }
