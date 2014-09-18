@@ -11,6 +11,9 @@
 #include <QDebug>
 #include "PatternMatchTableView.h"
 #include <QFileDialog>
+#include <QSettings>
+#include <QMenu>
+#include <QMenuBar>
 
 #include "PeriodValSegment.h"
 #include "DoubleBottomScanner.h"
@@ -27,9 +30,21 @@
 #include "RisingWedgeScanner.h"
 #include "FallingWedgeScanner.h"
 
+#define APP_SETTINGS_KEY_QUOTES_DIR "QUOTES_DIR"
+
+void MainWindow::initMenus()
+{
+    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
+    QAction *selectQuotesDirAction = new QAction(tr("&Select Quotes Directory..."), this);
+    fileMenu->addAction(selectQuotesDirAction);
+    connect(selectQuotesDirAction, SIGNAL(triggered()), this, SLOT(selectQuotesDir()));
+}
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
+
+    appSettings_ = QSettingsPtr(new QSettings(QString("configs/PatternRecogSettings.ini"), QSettings::IniFormat));
 
     QToolBar *toolBar = new QToolBar( this );
 
@@ -71,10 +86,18 @@ MainWindow::MainWindow(QWidget *parent) :
     setCentralWidget(centralWindow);
 
 
-    QString quoteFileDirName = QFileDialog::getExistingDirectory(this, "Select Quotes Directory");
-    if(!quoteFileDirName.isNull()) {
+    if(!appSettings_->contains(APP_SETTINGS_KEY_QUOTES_DIR))
+    {
+        selectQuotesDir();
+    }
+    else
+    {
+        QString quoteFileDirName = appSettings_->value(APP_SETTINGS_KEY_QUOTES_DIR).toString();
         instrumentListTableView_->populateFromCSVFiles(quoteFileDirName);
     }
+
+
+    initMenus();
 
     // Layout is finished. Populate the pattern plot and pattern selectin table with some data.
 
@@ -84,6 +107,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(instrumentListTableView_, SIGNAL(instrumentSelected (const InstrumentSelectionInfoPtr &)),
               this, SLOT(instrumentSelected(const InstrumentSelectionInfoPtr &)));
 
+}
+
+void MainWindow::selectQuotesDir()
+{
+    QString quoteFileDirName = QFileDialog::getExistingDirectory(this, "Select Quotes Directory");
+    while(quoteFileDirName.isNull()) {
+        quoteFileDirName = QFileDialog::getExistingDirectory(this, "Select Quotes Directory");
+    }
+    appSettings_->setValue(APP_SETTINGS_KEY_QUOTES_DIR,QVariant(quoteFileDirName));
+
+    instrumentListTableView_->populateFromCSVFiles(quoteFileDirName);
 }
 
 MainWindow::~MainWindow()
