@@ -76,7 +76,7 @@ MainWindow::MainWindow(QWidget *parent) :
     mainWindowGridLayout->addWidget(instrumentListTableView_,0,0,2,1);
     mainWindowGridLayout->addWidget(d_plot,0,1,1,1);
     mainWindowGridLayout->addWidget(patternTable_,1,1,1,1);
-    mainWindowGridLayout->setColumnStretch(0, 10);
+    mainWindowGridLayout->setColumnStretch(0, 5);
     mainWindowGridLayout->setColumnStretch(1, 30);
     mainWindowGridLayout->setRowStretch(0,30);
     mainWindowGridLayout->setRowStretch(1,10);
