@@ -4,10 +4,15 @@
 #include <qwt_plot.h>
 #include "PatternMatch.h"
 #include "PeriodValSegment.h"
+#include "StockChartPlotZoomer.h"
 
 class Plot: public QwtPlot
 {
     Q_OBJECT
+
+
+private:
+    StockChartPlotZoomer *plotZoomer_;
 
 public:
     Plot( QWidget * = NULL );

@@ -53,7 +53,7 @@ Plot::Plot( QWidget *parent ):
     // Ctrl+RighButton: zoom out to full size
 
     // TODO: Check the memory ownership/leak for the following allocation
-    new StockChartPlotZoomer( canvas() );
+    plotZoomer_ = new StockChartPlotZoomer( canvas() );
 
     QwtPlotPanner *panner = new QwtPlotPanner( canvas() );
     panner->setMouseButton( Qt::MidButton );
@@ -128,6 +128,9 @@ void Plot::populateChartData(const PeriodValSegmentPtr &chartData)
     // Rescale the plot based upon the boundaries of the current chart data
     setAxisAutoScale( QwtPlot::yLeft );
     setAxisAutoScale( QwtPlot::xBottom);
+
+    // Update the chart data for the plot zoomer, so it can show a curser with appropriate data.
+    plotZoomer_->setChartData(chartData);
 
     replot();
 
