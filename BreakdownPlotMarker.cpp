@@ -1,8 +1,9 @@
-#include "BreakoutPlotMarker.h"
+#include "BreakdownPlotMarker.h"
+
 #include "QDateHelper.h"
 #include <qwt_symbol.h>
 
-BreakoutPlotMarker::BreakoutPlotMarker(
+BreakdownPlotMarker::BreakdownPlotMarker(
         double pseudoXVal,
         double markerYVal)
     :   QwtPlotMarker()
@@ -12,7 +13,7 @@ BreakoutPlotMarker::BreakoutPlotMarker(
     setLinePen( Qt::black, 1, Qt::DashLine );
     setVisible( true );
 
-    QwtSymbol *markerSymbol = new QwtSymbol( QwtSymbol::UTriangle,
+    QwtSymbol *markerSymbol = new QwtSymbol( QwtSymbol::DTriangle,
         QBrush( Qt::green ), QPen( Qt::black, 1 ), QSize( 12, 12 ) );
 
     setSymbol( markerSymbol );

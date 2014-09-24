@@ -23,6 +23,7 @@
 #include "StockChartPlotZoomer.h"
 #include "StockChartPlotCurve.h"
 #include "BreakoutPlotMarker.h"
+#include "BreakdownPlotMarker.h"
 #include "PatternPlotCurve.h"
 #include "QDateHelper.h"
 
@@ -117,9 +118,14 @@ void Plot::populatePatternShapes(const PatternMatchPtr &patternMatch)
                     patternMatch->breakoutInfo->pseudoXVal(),patternMatch->breakoutInfo->breakoutPrice());
         breakoutPlotMarker->attach(this);
     }
+    else if(patternMatch->breakdownInfo)
+    {
+        BreakdownPlotMarker *breakdownPlotMarker = new BreakdownPlotMarker(
+                    patternMatch->breakdownInfo->pseudoXVal(),patternMatch->breakdownInfo->breakoutPrice());
+        breakdownPlotMarker->attach(this);
+    }
 
     replot();
-    // TODO - Adjust the plot's visible area to encompass the pattern.
 
 }
 
