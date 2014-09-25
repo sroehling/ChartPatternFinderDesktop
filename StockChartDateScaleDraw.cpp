@@ -18,8 +18,6 @@ StockChartDateScaleDraw::StockChartDateScaleDraw(Qt::TimeSpec /*timeSpec*/,
 
 QwtText StockChartDateScaleDraw::label( double labelVal ) const
 {
-    qDebug() << "StockChartDateScaleDraw: label val=" << labelVal;
-
     unsigned int chartDataIndex = floor(labelVal);
     if(chartDataIndex < chartData_->numVals())
     {

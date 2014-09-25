@@ -158,7 +158,6 @@ void MainWindow::instrumentSelected(const InstrumentSelectionInfoPtr &instrSelec
 
     PeriodValCltnIterListPtr pivotHighBeginIters = PivotHighScanner().scanPivotHighBeginIters(chartData);
 
-
      PatternScannerPtr doubleBottomScanner(new DoubleBottomScanner(DoubleRange(7.0,40.0)));
      MultiPatternScanner multiScanner(doubleBottomScanner);
      PatternMatchListPtr doubleBottoms = multiScanner.scanUniquePatternMatches(chartData,pivotHighBeginIters);
@@ -174,6 +173,9 @@ void MainWindow::instrumentSelected(const InstrumentSelectionInfoPtr &instrSelec
 
      RectangleScanner flatBaseScanner;
      PatternMatchListPtr flatBases = flatBaseScanner.scanPatternMatches(chartData);
+     std::cerr << "Pattern scan: " << instrSelectionInfo->instrumentName().toStdString()
+               << " rectangles: " << flatBases->size() << std::endl;
+
      currentPatternMatches->insert(currentPatternMatches->end(),flatBases->begin(),flatBases->end());
 
      RisingWedgeScanner risingWedgeScanner;

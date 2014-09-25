@@ -59,6 +59,18 @@ void PatternMatchTableView::populatePatternMatches(const PatternMatchListPtr &pa
         QDateTime endTime = QDateHelper::boostToQDateTime((*matchIter)->endTime());
         tableModel->setItem(rowNum,colNum,new QStandardItem(endTime.toString(dateFormat)));
         colNum++;
+/*
+        if((*matchIter)->isIncompleteMatch())
+        {
+            tableModel->setItem(rowNum,colNum,new QStandardItem("Incomplete"));
+
+        }
+        else
+        {
+            QDateTime endTime = QDateHelper::boostToQDateTime((*matchIter)->endTime());
+            tableModel->setItem(rowNum,colNum,new QStandardItem(endTime.toString(dateFormat)));
+        }
+  */
 
         tableModel->setItem(rowNum,colNum,new QStandardItem(QString().sprintf("%d",(*matchIter)->numPeriods())));
         colNum++;

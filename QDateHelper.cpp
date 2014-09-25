@@ -13,8 +13,6 @@ QDateTime boostToQDateTime(const boost::posix_time::ptime &boostTime)
 
     QDateTime convertedDateTime = QDateTime::fromTime_t(secsSince1970,Qt::UTC);
 
-    std::cerr << "Converted date str: " << convertedDateTime.toString().toStdString() << std::endl;
-
     return convertedDateTime;
 
 }
