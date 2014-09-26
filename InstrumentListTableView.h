@@ -10,8 +10,7 @@ class InstrumentListTableView : public QTableView
     Q_OBJECT
 
 private:
-    QStringList fileList_;
-    QDir dir_;
+    InstrumentSelectionInfoVector instrumentInfo_;
     void selectInstrument(int instrNum);
 
 public:

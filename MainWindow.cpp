@@ -16,19 +16,7 @@
 #include <QMenuBar>
 
 #include "PeriodValSegment.h"
-#include "DoubleBottomScanner.h"
 #include "PatternShapeGenerator.h"
-#include "MultiPatternScanner.h"
-#include "PatternMatchFilter.h"
-#include "SymetricTriangleScanner.h"
-#include "DescendingTriangleScanner.h"
-#include "AscendingTriangleScanner.h"
-#include "CupWithHandleScanner.h"
-#include "CupWithoutHandleScanner.h"
-#include "RectangleScanner.h"
-#include "PivotHighScanner.h"
-#include "RisingWedgeScanner.h"
-#include "FallingWedgeScanner.h"
 #include <QApplication>
 
 #define APP_SETTINGS_KEY_QUOTES_DIR "QUOTES_DIR"
@@ -152,62 +140,16 @@ void MainWindow::patternMatchSelected(const PatternMatchPtr &selectedMatch)
 void MainWindow::instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo)
 {
 
-    PeriodValSegmentPtr chartData = instrSelectionInfo->chartData();
+    PatternMatchListPtr currentPatternMatches = instrSelectionInfo->patternMatches();
 
-    PatternMatchListPtr currentPatternMatches = PatternMatchListPtr(new PatternMatchList());
+    d_plot->populateChartData(instrSelectionInfo);
 
-    PeriodValCltnIterListPtr pivotHighBeginIters = PivotHighScanner().scanPivotHighBeginIters(chartData);
+    patternTable_->populatePatternMatches(currentPatternMatches);
 
-     PatternScannerPtr doubleBottomScanner(new DoubleBottomScanner(DoubleRange(7.0,40.0)));
-     MultiPatternScanner multiScanner(doubleBottomScanner);
-     PatternMatchListPtr doubleBottoms = multiScanner.scanUniquePatternMatches(chartData,pivotHighBeginIters);
-     currentPatternMatches->insert(currentPatternMatches->end(),doubleBottoms->begin(),doubleBottoms->end());
-
-     SymetricTriangleScanner wedgeScanner;
-     PatternMatchListPtr symetricTriangles = wedgeScanner.scanPatternMatches(chartData);
-     currentPatternMatches->insert(currentPatternMatches->end(),symetricTriangles->begin(),symetricTriangles->end());
-
-     DescendingTriangleScanner descTriangleScanner;
-     PatternMatchListPtr descTriangle = descTriangleScanner.scanPatternMatches(chartData);
-     currentPatternMatches->insert(currentPatternMatches->end(),descTriangle->begin(),descTriangle->end());
-
-     RectangleScanner flatBaseScanner;
-     PatternMatchListPtr flatBases = flatBaseScanner.scanPatternMatches(chartData);
-     std::cerr << "Pattern scan: " << instrSelectionInfo->instrumentName().toStdString()
-               << " rectangles: " << flatBases->size() << std::endl;
-
-     currentPatternMatches->insert(currentPatternMatches->end(),flatBases->begin(),flatBases->end());
-
-     RisingWedgeScanner risingWedgeScanner;
-     PatternMatchListPtr risingWedges = risingWedgeScanner.scanPatternMatches(chartData);
-     currentPatternMatches->insert(currentPatternMatches->end(),risingWedges->begin(),risingWedges->end());
-
-     FallingWedgeScanner fallingWedgeScanner;
-     PatternMatchListPtr fallingWedges = fallingWedgeScanner.scanPatternMatches(chartData);
-     currentPatternMatches->insert(currentPatternMatches->end(),fallingWedges->begin(),fallingWedges->end());
-
-     AscendingTriangleScanner ascendingTriangleScanner;
-     PatternMatchListPtr ascTriangles = ascendingTriangleScanner.scanPatternMatches(chartData);
-     currentPatternMatches->insert(currentPatternMatches->end(),ascTriangles->begin(),ascTriangles->end());
-
-     PatternScannerPtr cupWithoutHandleScanner(new CupWithoutHandleScanner());
-     MultiPatternScanner multiCupScanner(cupWithoutHandleScanner);
-     PatternMatchListPtr cupWithoutHandleMatches = multiCupScanner.scanUniquePatternMatches(chartData,pivotHighBeginIters);
-     currentPatternMatches->insert(currentPatternMatches->end(),cupWithoutHandleMatches->begin(),cupWithoutHandleMatches->end());
-
-      PatternScannerPtr cupWithHandleScanner(new CupWithHandleScanner());
-     MultiPatternScanner multiCupWithHandleScanner(cupWithHandleScanner);
-     PatternMatchListPtr cupWithHandleMatches = multiCupWithHandleScanner.scanUniquePatternMatches(chartData,pivotHighBeginIters);
-     currentPatternMatches->insert(currentPatternMatches->end(),cupWithHandleMatches->begin(),cupWithHandleMatches->end());
-
-     d_plot->populateChartData(instrSelectionInfo);
-
-     patternTable_->populatePatternMatches(currentPatternMatches);
-
-     if(patternTable_->currentPatternMatches()->size() > 0)
-     {
-         patternTable_->selectRow(0);
-         d_plot->populatePatternShapes(patternTable_->currentPatternMatches()->front());
-     }
+    if(patternTable_->currentPatternMatches()->size() > 0)
+    {
+       patternTable_->selectRow(0);
+       d_plot->populatePatternShapes(patternTable_->currentPatternMatches()->front());
+    }
 
 }

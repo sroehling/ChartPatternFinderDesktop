@@ -21,32 +21,32 @@ InstrumentListTableView::InstrumentListTableView() :
 
 void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
 {
-    dir_ = QDir(quoteFilePath);
+    QDir dir = QDir(quoteFilePath);
 
     //Opens the path
-    dir_.setNameFilters(QStringList("*.csv"));
-    dir_.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
+    dir.setNameFilters(QStringList("*.csv"));
+    dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
 
-    qDebug() << "Scanning: " << dir_.path();
-    fileList_ = dir_.entryList();
+    qDebug() << "Scanning: " << dir.path();
+    QStringList fileList = dir.entryList();
 
-    unsigned int numRows = fileList_.count();
+    unsigned int numRows = fileList.count();
     unsigned int numCols = 1;
 
     QStandardItemModel *tableModel = new QStandardItemModel(numRows, numCols,this);
     tableModel->setHorizontalHeaderItem(0,new QStandardItem("Instrument/Symbol"));
 
-    for (int rowNum=0; rowNum<fileList_.count(); rowNum++)
+    for (int rowNum=0; rowNum<fileList.count(); rowNum++)
     {
+        qDebug() << "Found file (full path): " << dir.absoluteFilePath(fileList[rowNum]);
+        qDebug() << "Found file: " << fileList[rowNum];
+
+        InstrumentSelectionInfoPtr instrSelInfo(new InstrumentSelectionInfo(dir,fileList[rowNum]));
+
         unsigned int colNum = 0;
+        tableModel->setItem(rowNum,colNum,new QStandardItem(instrSelInfo->instrumentName()));
 
-        // Show the name of the file without the .csv suffix.
-        QString instrumentLabel(fileList_[rowNum]);
-        instrumentLabel.replace(".csv","");
-
-        tableModel->setItem(rowNum,colNum,new QStandardItem(instrumentLabel));
-        qDebug() << "Found file (full path): " << dir_.absoluteFilePath(fileList_[rowNum]);
-        qDebug() << "Found file: " << fileList_[rowNum];
+        instrumentInfo_.push_back(instrSelInfo);
     }
 
     setModel(tableModel);
@@ -61,7 +61,7 @@ void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
     connect(selectionModel(), SIGNAL(selectionChanged (const QItemSelection&, const QItemSelection&)),
               this, SLOT(instrumentSelectionChanged(const QItemSelection &,const QItemSelection &)));
 
-    if(fileList_.size()>0)
+    if(instrumentInfo_.size()>0)
     {
         // initially select the first instrument. This must happen after the slot connection
         // is established, since this will cause instrumentSelectionChanged() to be called.
@@ -72,16 +72,9 @@ void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
 void InstrumentListTableView::selectInstrument(int instrNum)
 {
     assert(instrNum >=0);
-    assert(instrNum < fileList_.size());
+    assert((unsigned int)instrNum < instrumentInfo_.size());
 
-    // Show the name of the file without the .csv suffix.
-    QString instrumentLabel(fileList_[instrNum]);
-    instrumentLabel.replace(".csv","");
-
-    QString instrFilePath(dir_.absoluteFilePath(fileList_[instrNum]));
-    PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile(instrFilePath.toStdString());
-
-    InstrumentSelectionInfoPtr selInfo(new InstrumentSelectionInfo(instrumentLabel,chartData));
+    InstrumentSelectionInfoPtr selInfo = instrumentInfo_[instrNum];
 
     emit instrumentSelected(selInfo);
 
@@ -91,7 +84,5 @@ void InstrumentListTableView::instrumentSelectionChanged (const QItemSelection  
                                       const QItemSelection  & )
 {
     unsigned int currentRow = selectionModel()->selectedRows().first().row();  //QModelIndexList is an ordered list
-    qDebug() << "Instrument List Table Selection: " << fileList_[currentRow];
-
     selectInstrument(currentRow);
 }

@@ -4,23 +4,30 @@
 #include "PeriodValSegment.h"
 #include <QString>
 #include <boost/shared_ptr.hpp>
+#include <vector>
+#include <QDir>
+#include "PatternMatch.h"
 
 
 class InstrumentSelectionInfo
 {
 private:
-    QString instrumentName_;
+    QDir dir_;
+    QString fileName_;
+
     PeriodValSegmentPtr chartData_;
+    PatternMatchListPtr patternMatches_;
 
 public:
-    InstrumentSelectionInfo(const QString &instrumentName,
-                            const PeriodValSegmentPtr &chartData);
+    InstrumentSelectionInfo(const QDir &directory, const QString &fileName);
 
-    const QString &instrumentName() const { return instrumentName_; }
-    const PeriodValSegmentPtr &chartData() const { return chartData_; }
+    QString instrumentName() const;
+    const PeriodValSegmentPtr &chartData();
+    const PatternMatchListPtr &patternMatches();
 };
 
 typedef boost::shared_ptr<InstrumentSelectionInfo> InstrumentSelectionInfoPtr;
+typedef std::vector<InstrumentSelectionInfoPtr> InstrumentSelectionInfoVector;
 
 
 #endif // INSTRUMENTSELECTIONINFO_H
