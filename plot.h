@@ -14,10 +14,14 @@ class Plot: public QwtPlot
 private:
     StockChartPlotZoomer *plotZoomer_;
 
+
 public:
     Plot( QWidget * = NULL );
     void populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo);
-    void populatePatternShapes(const PatternMatchPtr &patternMatch);
+
+    void clearPatternPlots();
+    void populateOnePatternShape(const PatternMatchPtr &patternMatch);
+    void populatePatternMatchesShapes(const PatternMatchListPtr &patternMatches);
 
 public Q_SLOTS:
     void setMode( int );
@@ -25,7 +29,6 @@ public Q_SLOTS:
 
 private Q_SLOTS:
     void showItem( QwtPlotItem *, bool on );
-    void clearPatternPlots();
 };
 
 #endif

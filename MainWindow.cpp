@@ -86,8 +86,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Layout is finished. Populate the pattern plot and pattern selectin table with some data.
 
-    connect(patternTable_, SIGNAL(patternMatchSelected (const PatternMatchPtr &)),
-              this, SLOT(patternMatchSelected(const PatternMatchPtr &)));
+    connect(patternTable_, SIGNAL(patternMatchesSelected (const PatternMatchListPtr &)),
+              this, SLOT(patternMatchesSelected(const PatternMatchListPtr &)));
 
     connect(instrumentListTableView_, SIGNAL(instrumentSelected (const InstrumentSelectionInfoPtr &)),
               this, SLOT(instrumentSelected(const InstrumentSelectionInfoPtr &)));
@@ -131,10 +131,9 @@ MainWindow::~MainWindow()
 {
 }
 
-void MainWindow::patternMatchSelected(const PatternMatchPtr &selectedMatch)
+void MainWindow::patternMatchesSelected(const PatternMatchListPtr &selectedMatches)
 {
-    d_plot->populatePatternShapes(selectedMatch);
-
+    d_plot->populatePatternMatchesShapes(selectedMatches);
 }
 
 void MainWindow::instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo)
@@ -150,7 +149,8 @@ void MainWindow::instrumentSelected(const InstrumentSelectionInfoPtr &instrSelec
     if(patternTable_->currentPatternMatches()->size() > 0)
     {
        patternTable_->selectRow(0);
-       d_plot->populatePatternShapes(patternTable_->currentPatternMatches()->front());
+       d_plot->clearPatternPlots();
+       d_plot->populateOnePatternShape(patternTable_->currentPatternMatches()->front());
     }
 
 }

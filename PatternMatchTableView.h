@@ -13,7 +13,7 @@ public:
     void populatePatternMatches(const PatternMatchListPtr &patternMatches);
     const PatternMatchListPtr currentPatternMatches() const { return currentPatternMatches_; }
 signals:
-    void patternMatchSelected(const PatternMatchPtr &);
+    void patternMatchesSelected(const PatternMatchListPtr &);
 
 public slots:
     void patternTableSelectionChanged (const QItemSelection  &selected,

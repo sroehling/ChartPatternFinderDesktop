@@ -40,7 +40,7 @@ public:
 
 public slots:
     void instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo);
-    void patternMatchSelected(const PatternMatchPtr &selectedMatch);
+    void patternMatchesSelected(const PatternMatchListPtr &selectedMatch);
 };
 
 #endif // MAINWINDOW_H

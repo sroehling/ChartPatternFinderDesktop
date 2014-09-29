@@ -12,7 +12,7 @@ using namespace patternMatchFilter;
 PatternMatchTableView::PatternMatchTableView()
 {
     setSelectionBehavior(QAbstractItemView::SelectRows);
-    setSelectionMode(QAbstractItemView::SingleSelection);
+    setSelectionMode(QAbstractItemView::ExtendedSelection);
     setEditTriggers(QAbstractItemView::NoEditTriggers); // disable editing
 
     // Hide the row numbers
@@ -110,15 +110,21 @@ void PatternMatchTableView::patternTableSelectionChanged (const QItemSelection  
                                       const QItemSelection  & )
 {
     qDebug() << "Pattern Table Selection: " << selected;
-    unsigned int currentRow = selectionModel()->selectedRows().first().row();  //QModelIndexList is an ordered list
-    qDebug() << "Pattern Table Selection: selected row =  " << currentRow;
 
-    assert(currentRow< currentPatternMatches_->size());
+    PatternMatchListPtr selectedPatterns = PatternMatchListPtr(new PatternMatchList());
 
-    PatternMatchList::iterator matchListIter = currentPatternMatches_->begin();
-    std::advance(matchListIter,currentRow);
-    PatternMatchPtr currMatch = (*matchListIter);
+    QModelIndexList patternSelectionList = selectionModel()->selectedRows();
+    for(QModelIndexList::iterator selectionIter = patternSelectionList.begin();
+        selectionIter != patternSelectionList.end(); selectionIter++)
+    {
+        unsigned int selectionRow = (*selectionIter).row();
+        assert(selectionRow <= currentPatternMatches_->size());
+        PatternMatchList::iterator matchListIter = currentPatternMatches_->begin();
+        std::advance(matchListIter,selectionRow);
+        PatternMatchPtr currMatch = (*matchListIter);
+        selectedPatterns->push_back(currMatch);
+    }
 
-    emit patternMatchSelected(currMatch);
+    emit patternMatchesSelected(selectedPatterns);
 }
 

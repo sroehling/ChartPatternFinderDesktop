@@ -85,13 +85,12 @@ void Plot::clearPatternPlots()
 
 }
 
-void Plot::populatePatternShapes(const PatternMatchPtr &patternMatch)
+void Plot::populateOnePatternShape(const PatternMatchPtr &patternMatch)
 {
     PatternShapeGenerator shapeGen;
     PatternShapePtr patternShape = shapeGen.generateShape(*patternMatch);
     PatternShapePointVectorVectorPtr curveShapes = patternShape->curveShapes();
 
-    clearPatternPlots();
 
     // Re-populate with the pattern for the given patternMatch
     for(PatternShapePointVectorVector::iterator curveShapeIter = curveShapes->begin();
@@ -127,6 +126,17 @@ void Plot::populatePatternShapes(const PatternMatchPtr &patternMatch)
 
     replot();
 
+}
+
+void Plot::populatePatternMatchesShapes(const PatternMatchListPtr &patternMatches)
+{
+    clearPatternPlots();
+
+    for(PatternMatchList::iterator matchesIter = patternMatches->begin();
+        matchesIter != patternMatches->end(); matchesIter++)
+    {
+        populateOnePatternShape(*matchesIter);
+    }
 }
 
 

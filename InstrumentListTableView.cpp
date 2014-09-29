@@ -60,7 +60,7 @@ void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
     if(instrumentList_)
     {
         // If there's an existing list, "obsolete" the list, so any scanning which
-        // is already being performed will stop.
+        // is already in progress will stop.
         instrumentList_->obsoleteList();
     }
     instrumentList_ = InstrumentListPtr(new InstrumentList(quoteFilePath));
@@ -74,6 +74,8 @@ void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
         selectRow(0);
     }
 
+    // Add a couple worker threads to scan each of the instruments (symbols/tickers) in
+    // the instrument list.
     QThreadPool::globalInstance()->start(new PatternScanWorkerTask(instrumentList_));
     QThreadPool::globalInstance()->start(new PatternScanWorkerTask(instrumentList_));
 }
