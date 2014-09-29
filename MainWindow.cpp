@@ -140,6 +140,7 @@ void MainWindow::patternMatchSelected(const PatternMatchPtr &selectedMatch)
 void MainWindow::instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo)
 {
 
+    assert(instrSelectionInfo->patternScanComplete());
     PatternMatchListPtr currentPatternMatches = instrSelectionInfo->patternMatches();
 
     d_plot->populateChartData(instrSelectionInfo);

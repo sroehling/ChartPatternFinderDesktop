@@ -4,13 +4,16 @@
 #include <QTableView>
 #include <QDir>
 #include "InstrumentSelectionInfo.h"
+#include "InstrumentList.h"
 
 class InstrumentListTableView : public QTableView
 {
     Q_OBJECT
 
 private:
-    InstrumentSelectionInfoVector instrumentInfo_;
+    InstrumentListPtr instrumentList_;
+
+    void populateTable();
     void selectInstrument(int instrNum);
 
 public:

@@ -6,6 +6,9 @@
 #include "InstrumentSelectionInfo.h"
 #include <assert.h>
 
+#include <QThreadPool>
+#include "PatternScanWorkerTask.h"
+
 InstrumentListTableView::InstrumentListTableView() :
     QTableView()
 {
@@ -19,34 +22,22 @@ InstrumentListTableView::InstrumentListTableView() :
 }
 
 
-void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
+void InstrumentListTableView::populateTable()
 {
-    QDir dir = QDir(quoteFilePath);
-
-    //Opens the path
-    dir.setNameFilters(QStringList("*.csv"));
-    dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
-
-    qDebug() << "Scanning: " << dir.path();
-    QStringList fileList = dir.entryList();
-
-    unsigned int numRows = fileList.count();
+    assert(instrumentList_);
+    unsigned int numRows = instrumentList_->numInstruments();
     unsigned int numCols = 1;
 
     QStandardItemModel *tableModel = new QStandardItemModel(numRows, numCols,this);
     tableModel->setHorizontalHeaderItem(0,new QStandardItem("Instrument/Symbol"));
 
-    for (int rowNum=0; rowNum<fileList.count(); rowNum++)
+    for (unsigned int rowNum=0; rowNum<numRows; rowNum++)
     {
-        qDebug() << "Found file (full path): " << dir.absoluteFilePath(fileList[rowNum]);
-        qDebug() << "Found file: " << fileList[rowNum];
 
-        InstrumentSelectionInfoPtr instrSelInfo(new InstrumentSelectionInfo(dir,fileList[rowNum]));
+        InstrumentSelectionInfoPtr instrSelInfo = instrumentList_->instrInfo(rowNum);
 
         unsigned int colNum = 0;
         tableModel->setItem(rowNum,colNum,new QStandardItem(instrSelInfo->instrumentName()));
-
-        instrumentInfo_.push_back(instrSelInfo);
     }
 
     setModel(tableModel);
@@ -61,20 +52,38 @@ void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
     connect(selectionModel(), SIGNAL(selectionChanged (const QItemSelection&, const QItemSelection&)),
               this, SLOT(instrumentSelectionChanged(const QItemSelection &,const QItemSelection &)));
 
-    if(instrumentInfo_.size()>0)
+}
+
+void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
+{
+
+    if(instrumentList_)
+    {
+        // If there's an existing list, "obsolete" the list, so any scanning which
+        // is already being performed will stop.
+        instrumentList_->obsoleteList();
+    }
+    instrumentList_ = InstrumentListPtr(new InstrumentList(quoteFilePath));
+
+    populateTable();
+
+    if(instrumentList_->numInstruments()>0)
     {
         // initially select the first instrument. This must happen after the slot connection
         // is established, since this will cause instrumentSelectionChanged() to be called.
         selectRow(0);
     }
+
+    QThreadPool::globalInstance()->start(new PatternScanWorkerTask(instrumentList_));
+    QThreadPool::globalInstance()->start(new PatternScanWorkerTask(instrumentList_));
 }
 
 void InstrumentListTableView::selectInstrument(int instrNum)
 {
     assert(instrNum >=0);
-    assert((unsigned int)instrNum < instrumentInfo_.size());
+    assert((unsigned int)instrNum < instrumentList_->numInstruments());
 
-    InstrumentSelectionInfoPtr selInfo = instrumentInfo_[instrNum];
+    InstrumentSelectionInfoPtr selInfo = instrumentList_->instrInfoWithScannedPatterns(instrNum);
 
     emit instrumentSelected(selInfo);
 
