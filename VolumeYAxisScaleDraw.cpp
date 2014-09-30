@@ -9,7 +9,7 @@ QwtText VolumeYAxisScaleDraw::label( double labelVal ) const
 {
     // The %g in the sprintf will remove trailing zeroes as appropriate.
     QString formattedVolume;
-    if(labelVal > 1000000.0)
+    if(labelVal >= 1000000.0)
      {
         double volumeInMillions = labelVal/1000000.0;
         formattedVolume = QString().sprintf("%gM",volumeInMillions);
