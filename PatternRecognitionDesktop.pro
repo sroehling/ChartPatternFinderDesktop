@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     PatternScanWorkerTask.cpp \
     StackedStockCharts.cpp \
     VolumePlot.cpp \
-    VolumePlotCurve.cpp
+    VolumePlotCurve.cpp \
+    VolumeYAxisScaleDraw.cpp
 
 HEADERS  += \
     griditem.h \
@@ -61,7 +62,8 @@ HEADERS  += \
     PatternScanWorkerTask.h \
     StackedStockCharts.h \
     VolumePlot.h \
-    VolumePlotCurve.h
+    VolumePlotCurve.h \
+    VolumeYAxisScaleDraw.h
 
 
 ## PatternRecognitionLib is linked from the library built within the sub-module

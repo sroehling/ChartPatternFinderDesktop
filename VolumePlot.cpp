@@ -5,8 +5,10 @@
 
 #include <qwt_scale_engine.h>
 #include <qwt_legend.h>
+#include "qwt_plot_grid.h"
 
 #include "VolumePlotCurve.h"
+#include "VolumeYAxisScaleDraw.h"
 
 VolumePlot::VolumePlot(QWidget *parent) :
     QwtPlot(parent)
@@ -34,6 +36,13 @@ VolumePlot::VolumePlot(QWidget *parent) :
     QwtLegend *legend = new QwtLegend;
     this->insertLegend(legend, QwtPlot::BottomLegend);
 
+    // Attach a dotted-line grid to the plot.
+    QwtPlotGrid *grid = new QwtPlotGrid();
+    grid->setItemAttribute(grid->Legend, false);
+    grid->setPen(QColor(Qt::gray), 0.0, Qt::PenStyle::DotLine);
+    grid->attach(this);
+
+    setAxisScaleDraw( QwtPlot::yLeft, new VolumeYAxisScaleDraw());
 }
 
 void VolumePlot::populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo)
@@ -48,7 +57,7 @@ void VolumePlot::populateChartData(const InstrumentSelectionInfoPtr &instrSelInf
     VolumePlotCurve *volDataCurve = new VolumePlotCurve(instrSelInfo->chartData());
     volDataCurve->attach( this );
 
-    // Rescale the plot based upon the boundaries of the current chart data
+    // Initally rescale the plot based upon the boundaries of the current chart data
     setAxisAutoScale( QwtPlot::yLeft );
     setAxisAutoScale( QwtPlot::xBottom);
 
