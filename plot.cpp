@@ -13,6 +13,7 @@
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 #include <qwt_plot_barchart.h>
+#include <qwt_plot_legenditem.h>
 #include <assert.h>
 
 #include "plot.h"
@@ -74,6 +75,10 @@ Plot::Plot( QWidget *parent ):
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     setMinimumSize(0,0);
 
+    // Attach a legend internal to the plot
+    QwtPlotLegendItem *legend = new QwtPlotLegendItem();
+    legend->setAlignment(Qt::Alignment(Qt::AlignTop | Qt::AlignLeft));
+    legend->attach(this);
 
     // Set the background color to white
     setAutoFillBackground( true );

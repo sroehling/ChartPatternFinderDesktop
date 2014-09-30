@@ -9,6 +9,7 @@
 
 #include "VolumePlotCurve.h"
 #include "VolumeYAxisScaleDraw.h"
+#include <qwt_plot_legenditem.h>
 
 VolumePlot::VolumePlot(QWidget *parent) :
     QwtPlot(parent)
@@ -33,8 +34,11 @@ VolumePlot::VolumePlot(QWidget *parent) :
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     setMinimumSize(0,0);
 
-    QwtLegend *legend = new QwtLegend;
-    this->insertLegend(legend, QwtPlot::BottomLegend);
+
+    // Attach a legend internal to the plot
+    QwtPlotLegendItem *legend = new QwtPlotLegendItem();
+    legend->setAlignment(Qt::Alignment(Qt::AlignTop | Qt::AlignLeft));
+    legend->attach(this);
 
     // Attach a dotted-line grid to the plot.
     QwtPlotGrid *grid = new QwtPlotGrid();

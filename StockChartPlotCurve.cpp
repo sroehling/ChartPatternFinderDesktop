@@ -19,7 +19,7 @@ StockChartPlotCurve::StockChartPlotCurve(const PeriodValSegmentPtr &chartData)
 
     }
     setSamples( chartDataSamples );
-    setTitle( "Symbol Name TBD" );
+    setTitle( "Price" ); // for the legend
     setOrientation( Qt::Vertical );
 
     // The stock chart data is mapped onto an integral scale, with the

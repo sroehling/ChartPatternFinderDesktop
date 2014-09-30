@@ -15,6 +15,9 @@ PatternPlotCurve::PatternPlotCurve(const PatternShapePointVectorPtr &shapeCurve,
     setPen( Qt::blue, 3 ),
     setRenderHint( QwtPlotItem::RenderAntialiased, true );
 
+    // Don't display pattern items in the legend
+    setItemAttribute(QwtPlotItem::Legend,false);
+
     QPolygonF shapePoints;
     for(PatternShapePointVector::iterator shapeIter = shapeCurve->begin();
         shapeIter != shapeCurve->end(); shapeIter++)
