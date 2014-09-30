@@ -19,6 +19,8 @@
 #include "PatternShapeGenerator.h"
 #include <QApplication>
 
+#include "StackedStockCharts.h"
+
 #define APP_SETTINGS_KEY_QUOTES_DIR "QUOTES_DIR"
 
 void MainWindow::initMenus()
@@ -46,7 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QToolButton *btnExport = new QToolButton( toolBar );
     btnExport->setText( "Export" );
     btnExport->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
- //   connect( btnExport, SIGNAL( clicked() ), d_plot, SLOT( exportPlot() ) );
+ //   connect( btnExport, SIGNAL( clicked() ), priceAndPatternPlot_, SLOT( exportPlot() ) );
 
     toolBar->addWidget( typeBox );
     toolBar->addWidget( btnExport );
@@ -55,14 +57,16 @@ MainWindow::MainWindow(QWidget *parent) :
     patternTable_ = new PatternMatchTableView();
     instrumentListTableView_ = new InstrumentListTableView();
 
-    d_plot = new Plot( this );
-    d_plot->setMode( typeBox->currentIndex() );
+    stackedStockCharts_ = new StackedStockCharts(this);
+    priceAndPatternPlot_ = stackedStockCharts_->priceAndPatternPlot();
+
+    priceAndPatternPlot_->setMode( typeBox->currentIndex() );
     connect( typeBox, SIGNAL( currentIndexChanged( int ) ),
-        d_plot, SLOT( setMode( int ) ) );
+        priceAndPatternPlot_, SLOT( setMode( int ) ) );
 
     QGridLayout *mainWindowGridLayout = new QGridLayout;
     mainWindowGridLayout->addWidget(instrumentListTableView_,0,0,2,1);
-    mainWindowGridLayout->addWidget(d_plot,0,1,1,1);
+    mainWindowGridLayout->addWidget(stackedStockCharts_,0,1,1,1);
     mainWindowGridLayout->addWidget(patternTable_,1,1,1,1);
     mainWindowGridLayout->setColumnStretch(0, 5);
     mainWindowGridLayout->setColumnStretch(1, 30);
@@ -133,7 +137,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::patternMatchesSelected(const PatternMatchListPtr &selectedMatches)
 {
-    d_plot->populatePatternMatchesShapes(selectedMatches);
+    priceAndPatternPlot_->populatePatternMatchesShapes(selectedMatches);
 }
 
 void MainWindow::instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo)
@@ -142,15 +146,15 @@ void MainWindow::instrumentSelected(const InstrumentSelectionInfoPtr &instrSelec
     assert(instrSelectionInfo->patternScanComplete());
     PatternMatchListPtr currentPatternMatches = instrSelectionInfo->patternMatches();
 
-    d_plot->populateChartData(instrSelectionInfo);
+    stackedStockCharts_->populateChartData(instrSelectionInfo);
 
     patternTable_->populatePatternMatches(currentPatternMatches);
 
     if(patternTable_->currentPatternMatches()->size() > 0)
     {
        patternTable_->selectRow(0);
-       d_plot->clearPatternPlots();
-       d_plot->populateOnePatternShape(patternTable_->currentPatternMatches()->front());
+       priceAndPatternPlot_->clearPatternPlots();
+       priceAndPatternPlot_->populateOnePatternShape(patternTable_->currentPatternMatches()->front());
     }
 
 }

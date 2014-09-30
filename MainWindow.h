@@ -10,6 +10,7 @@
 #include "InstrumentListTableView.h"
 #include "QSettings"
 #include <boost/shared_ptr.hpp>
+#include "StackedStockCharts.h"
 
 typedef boost::shared_ptr<QSettings> QSettingsPtr;
 
@@ -27,7 +28,10 @@ private:
     QString chooseQuotesDir(bool requireChoice);
 
     QSettingsPtr appSettings_;
-    Plot *d_plot;
+
+    Plot *priceAndPatternPlot_;
+    StackedStockCharts *stackedStockCharts_;
+
     PatternMatchTableView* patternTable_;
     InstrumentListTableView *instrumentListTableView_;
 

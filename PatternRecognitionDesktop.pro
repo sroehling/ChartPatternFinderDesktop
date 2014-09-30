@@ -36,7 +36,10 @@ SOURCES += main.cpp\
     InstrumentSelectionInfo.cpp \
     BreakdownPlotMarker.cpp \
     InstrumentList.cpp \
-    PatternScanWorkerTask.cpp
+    PatternScanWorkerTask.cpp \
+    StackedStockCharts.cpp \
+    VolumePlot.cpp \
+    VolumePlotCurve.cpp
 
 HEADERS  += \
     griditem.h \
@@ -55,7 +58,10 @@ HEADERS  += \
     InstrumentSelectionInfo.h \
     BreakdownPlotMarker.h \
     InstrumentList.h \
-    PatternScanWorkerTask.h
+    PatternScanWorkerTask.h \
+    StackedStockCharts.h \
+    VolumePlot.h \
+    VolumePlotCurve.h
 
 
 ## PatternRecognitionLib is linked from the library built within the sub-module

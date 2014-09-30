@@ -69,6 +69,12 @@ Plot::Plot( QWidget *parent ):
     grid->setPen(QColor(Qt::gray), 0.0, Qt::PenStyle::DotLine);
     grid->attach(this);
 
+    // Override the size policy. Otherwise, the plot may not scale to
+    // the desired dimensions from the grid layout.
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    setMinimumSize(0,0);
+
+
     // Set the background color to white
     setAutoFillBackground( true );
     setPalette( Qt::white );
