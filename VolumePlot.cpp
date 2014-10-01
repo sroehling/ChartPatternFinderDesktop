@@ -10,6 +10,8 @@
 #include "VolumePlotCurve.h"
 #include "VolumeYAxisScaleDraw.h"
 #include <qwt_plot_legenditem.h>
+#include <QDebug>
+#include "DoubleRange.h"
 
 VolumePlot::VolumePlot(QWidget *parent) :
     QwtPlot(parent)
@@ -52,6 +54,8 @@ VolumePlot::VolumePlot(QWidget *parent) :
 void VolumePlot::populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo)
 {
 
+    currentChartData_ = instrSelInfo;
+
     this->detachItems(QwtPlotItem::Rtti_PlotBarChart,true);
     this->detachItems(QwtPlotItem::Rtti_PlotTradingCurve,true);
 
@@ -68,6 +72,45 @@ void VolumePlot::populateChartData(const InstrumentSelectionInfoPtr &instrSelInf
 
     replot();
 
+}
+
+void VolumePlot::rescaleAxis(const QwtScaleDiv &xAxisScale)
+{
+
+    setAxisScaleDiv( QwtPlot::xBottom, xAxisScale );
+
+    assert(currentChartData_);
+
+    // Based upon the currently visible data values on the X axis, scale the Y axis for the
+    // volume plot to what is visibile.
+
+    double xAxisLowerBound = axisScaleDiv(QwtPlot::xBottom ).lowerBound();
+    double xAxisUpperBound = axisScaleDiv(QwtPlot::xBottom ).upperBound();
+    DoubleRange xAxisRange(xAxisLowerBound,xAxisUpperBound);
+    qDebug() << "New volume plot x axis lower bound: " << xAxisUpperBound;
+    qDebug() << "New volume plot x axis upper bound: " << xAxisLowerBound;
+
+    double maxVolume = 0.0;
+    PeriodValSegmentPtr chartData = currentChartData_->chartData();
+    for(PeriodValCltn::iterator chartDataIter = chartData->segBegin();
+        chartDataIter != chartData->segEnd(); chartDataIter++)
+    {
+        if(xAxisRange.valueWithinRange((*chartDataIter).pseudoXVal()))
+        {
+            double currVol = (*chartDataIter).volume();
+            maxVolume = currVol>maxVolume?currVol:maxVolume;
+        }
+
+    }
+
+    double roundUpFactor = 1000000.0;
+    unsigned int fullVolMillions = (unsigned int)(maxVolume / roundUpFactor);
+    double volumeMaxScale = ((double)fullVolMillions + 1.0)*roundUpFactor;
+
+    setAxisScale(QwtPlot::yLeft,0,volumeMaxScale,0);
+
+
+    replot();
 
 }
 

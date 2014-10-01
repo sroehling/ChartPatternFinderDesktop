@@ -7,11 +7,11 @@
 #include <qwt_scale_draw.h>
 #include "plot.h"
 #include <QDebug>
+#include "DoubleRange.h"
 
 StackedStockCharts::StackedStockCharts(QWidget *parent ):
     QFrame( parent )
 {
-
     QGridLayout *layout = new QGridLayout( this );
 
     priceAndPatternPlot_ = new Plot(this);
@@ -25,7 +25,6 @@ StackedStockCharts::StackedStockCharts(QWidget *parent ):
 
     connect( priceAndPatternPlot_->axisWidget( QwtPlot::xBottom ),
         SIGNAL( scaleDivChanged() ), SLOT( scaleDivChanged() ) );
-
 }
 
 void StackedStockCharts::populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo)
@@ -54,16 +53,6 @@ void StackedStockCharts::populateChartData(const InstrumentSelectionInfoPtr &ins
 
 void StackedStockCharts::scaleDivChanged()
 {
-
     qDebug() << "Stacked Stock Charts: scaleDivChange()";
-
-    volumePlot_->setAxisScaleDiv( QwtPlot::xBottom, priceAndPatternPlot_->axisScaleDiv( QwtPlot::xBottom ) );
-
-    // TODO - Based upon the currently visible data values on the X axis, scale the Y axis for the
-    // volume plot to what is visibile.
-    // volumePlot_->setAxisAutoScale( QwtPlot::yLeft );
-
-
-    volumePlot_->replot();
-
+    volumePlot_->rescaleAxis(priceAndPatternPlot_->axisScaleDiv( QwtPlot::xBottom ));
 }

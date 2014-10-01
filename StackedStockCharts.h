@@ -7,6 +7,7 @@
 #include "plot.h"
 #include "VolumePlot.h"
 #include <QGridLayout>
+#include "InstrumentSelectionInfo.h"
 
 class StackedStockCharts : public QFrame
 {
@@ -16,6 +17,7 @@ class StackedStockCharts : public QFrame
 private:
     Plot *priceAndPatternPlot_;
     VolumePlot *volumePlot_;
+
 
 public:
     StackedStockCharts(QWidget * parent = NULL );
