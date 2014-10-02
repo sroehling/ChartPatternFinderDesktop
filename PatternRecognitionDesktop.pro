@@ -14,10 +14,10 @@ TEMPLATE = app
 # Configure compiling and linking against libc++ instead of libstdc++
 # This is needed to ensure consistency for all components, including
 # the boost library.
-QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=c++11 -stdlib=libc++
-LIBS += -mmacosx-version-min=10.7 -stdlib=libc++
-CONFIG += c++11
 
+macx: QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=c++11 -stdlib=libc++
+macx: LIBS += -mmacosx-version-min=10.7 -stdlib=libc++
+CONFIG += c++11
 
 SOURCES += main.cpp\
     plot.cpp \
@@ -70,15 +70,22 @@ HEADERS  += \
 macx: LIBS += -L$$PWD/lib/PatternRecognitionLib/build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Debug/ -lPatternRecognitionLib
 macx: PRE_TARGETDEPS += $$PWD/lib/PatternRecognitionLib/build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Debug/libPatternRecognitionLib.a
 
+win32: LIBS += -L$$PWD/lib/PatternRecognitionLib/build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Debug/debug/ -lPatternRecognitionLib
+win32: PRE_TARGETDEPS += $$PWD/lib/PatternRecognitionLib/build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Debug/debug/libPatternRecognitionLib.a
+
 ## Link with pre-built version of Boost.
-DEFINES += BOOST_ALL_DYN_LINK
-DEFINES += BOOST_LOG_DYN_LINK
+# IMPORTANT: To avoid link errors, the boost libraries must come *after* PatternRecognitionLib in the
+# build sequence. gcc is especialy sensitive to this.
+macx: DEFINES += BOOST_ALL_DYN_LINK
+macx: DEFINES += BOOST_LOG_DYN_LINK
 macx: INCLUDEPATH += /usr/local/boost156/include
 macx: LIBS += -L/usr/local/boost156/lib -lboost_date_time-mt -lboost_log-mt -lboost_log_setup-mt -lboost_unit_test_framework-mt
-
 macx: include ( /usr/local/qwt-6.1.0/features/qwt.prf )
+win32: INCLUDEPATH += c:/boost_1_56_0
+win32:LIBS += -L"C:/boost_1_56_0/stage/lib/" -lboost_date_time-mgw48-mt-1_56 -lboost_log-mgw48-mt-1_56 -lboost_log_setup-mgw48-mt-1_56
+win32: include ( c:/qwt-6.1.1/qwt.prf )
 
-macx: INCLUDEPATH += $$PWD/lib/PatternRecognitionLib/src/chartSegment\
+INCLUDEPATH += $$PWD/lib/PatternRecognitionLib/src/chartSegment\
     $$PWD/lib/PatternRecognitionLib/src/chartSegmentList\
     $$PWD/lib/PatternRecognitionLib/src/date\
     $$PWD/lib/PatternRecognitionLib/src/math\
