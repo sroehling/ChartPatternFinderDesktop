@@ -18,7 +18,9 @@
 #include "PeriodValSegment.h"
 #include "PatternShapeGenerator.h"
 #include <QApplication>
-
+#include <QSplitter>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include "StackedStockCharts.h"
 
 #define APP_SETTINGS_KEY_QUOTES_DIR "QUOTES_DIR"
@@ -64,19 +66,22 @@ MainWindow::MainWindow(QWidget *parent) :
     connect( typeBox, SIGNAL( currentIndexChanged( int ) ),
         priceAndPatternPlot_, SLOT( setMode( int ) ) );
 
-    QGridLayout *mainWindowGridLayout = new QGridLayout;
-    mainWindowGridLayout->addWidget(instrumentListTableView_,0,0,2,1);
-    mainWindowGridLayout->addWidget(stackedStockCharts_,0,1,1,1);
-    mainWindowGridLayout->addWidget(patternTable_,1,1,1,1);
-    mainWindowGridLayout->setColumnStretch(0, 5);
-    mainWindowGridLayout->setColumnStretch(1, 30);
-    mainWindowGridLayout->setRowStretch(0,30);
-    mainWindowGridLayout->setRowStretch(1,10);
 
+    QVBoxLayout *chartAndPatternListLayout = new QVBoxLayout();
+    chartAndPatternListLayout->addWidget(stackedStockCharts_,30);
+    chartAndPatternListLayout->addWidget(patternTable_,10);
+    QWidget *rhsContent = new QWidget();
+    rhsContent->setLayout(chartAndPatternListLayout);
 
-    QWidget *centralWindow = new QWidget();
-    centralWindow->setLayout(mainWindowGridLayout);
-    setCentralWidget(centralWindow);
+    QSplitter *mainSplitter = new QSplitter(Qt::Horizontal);
+    mainSplitter->addWidget(instrumentListTableView_);
+    mainSplitter->addWidget(rhsContent);
+    mainSplitter->setStretchFactor(0,30);
+    mainSplitter->setStretchFactor(1,70);
+    mainSplitter->setCollapsible(0,false);
+    mainSplitter->setCollapsible(1,false);
+
+    setCentralWidget(mainSplitter);
 
     if(!appSettings_->contains(APP_SETTINGS_KEY_QUOTES_DIR))
     {
