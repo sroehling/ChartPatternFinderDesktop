@@ -20,6 +20,7 @@ StockChartPlotCurve::StockChartPlotCurve(const PeriodValSegmentPtr &chartData)
     }
     setSamples( chartDataSamples );
     setTitle( "Price" ); // for the legend
+    setItemAttribute(QwtPlotItem::Legend,false); // Legend not needed for price plot
     setOrientation( Qt::Vertical );
 
     // The stock chart data is mapped onto an integral scale, with the

@@ -67,7 +67,7 @@ Plot::Plot( QWidget *parent ):
     // Attach a dotted-line grid to the plot.
     QwtPlotGrid *grid = new QwtPlotGrid();
     grid->setItemAttribute(grid->Legend, false);
-    grid->setPen(QColor(Qt::gray), 0.0, Qt::PenStyle::DotLine);
+    grid->setPen(QColor(Qt::lightGray), 0.0, Qt::PenStyle::DotLine);
     grid->attach(this);
 
     // Override the size policy. Otherwise, the plot may not scale to

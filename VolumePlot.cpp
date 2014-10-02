@@ -45,7 +45,7 @@ VolumePlot::VolumePlot(QWidget *parent) :
     // Attach a dotted-line grid to the plot.
     QwtPlotGrid *grid = new QwtPlotGrid();
     grid->setItemAttribute(grid->Legend, false);
-    grid->setPen(QColor(Qt::gray), 0.0, Qt::PenStyle::DotLine);
+    grid->setPen(QColor(Qt::lightGray), 0.0, Qt::PenStyle::DotLine);
     grid->attach(this);
 
     setAxisScaleDraw( QwtPlot::yLeft, new VolumeYAxisScaleDraw());

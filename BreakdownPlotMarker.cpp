@@ -10,7 +10,7 @@ BreakdownPlotMarker::BreakdownPlotMarker(
 {
 
     setLineStyle( QwtPlotMarker::HLine );
-    setLinePen( Qt::black, 1, Qt::DashLine );
+    setLinePen( Qt::black, 1.25, Qt::DashLine );
     setVisible( true );
 
     QwtSymbol *markerSymbol = new QwtSymbol( QwtSymbol::DTriangle,
