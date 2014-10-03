@@ -37,6 +37,7 @@ private:
 
 private slots:
      void actionSelectQuotesDir();
+     void refreshQuotes();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

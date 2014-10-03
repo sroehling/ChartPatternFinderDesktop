@@ -22,6 +22,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include "StackedStockCharts.h"
+#include <QPushButton>
+#include <QStyle>
 
 #define APP_SETTINGS_KEY_QUOTES_DIR "QUOTES_DIR"
 
@@ -66,6 +68,22 @@ MainWindow::MainWindow(QWidget *parent) :
     connect( typeBox, SIGNAL( currentIndexChanged( int ) ),
         priceAndPatternPlot_, SLOT( setMode( int ) ) );
 
+    QVBoxLayout *lhsLayout = new QVBoxLayout();
+    lhsLayout->addWidget(instrumentListTableView_);
+
+    QPushButton *openQuotesButton = new QPushButton("Open Quotes");
+    connect(openQuotesButton,SIGNAL(clicked()),this,SLOT(actionSelectQuotesDir()));
+    openQuotesButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirOpenIcon));
+    lhsLayout->addWidget(openQuotesButton);
+
+    QPushButton *refreshQuotesButton = new QPushButton("Reload Quotes");
+    refreshQuotesButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
+    lhsLayout->addWidget(refreshQuotesButton);
+
+
+    QWidget *lhsContent = new QWidget();
+    lhsContent->setLayout(lhsLayout);
+
 
     QVBoxLayout *chartAndPatternListLayout = new QVBoxLayout();
     chartAndPatternListLayout->addWidget(stackedStockCharts_,30);
@@ -74,7 +92,7 @@ MainWindow::MainWindow(QWidget *parent) :
     rhsContent->setLayout(chartAndPatternListLayout);
 
     QSplitter *mainSplitter = new QSplitter(Qt::Horizontal);
-    mainSplitter->addWidget(instrumentListTableView_);
+    mainSplitter->addWidget(lhsContent);
     mainSplitter->addWidget(rhsContent);
     mainSplitter->setStretchFactor(0,30);
     mainSplitter->setStretchFactor(1,70);
@@ -134,6 +152,13 @@ void MainWindow::actionSelectQuotesDir()
         // Only update the instrument list if a new choice was made
         instrumentListTableView_->populateFromCSVFiles(quoteFileDirName);
     }
+}
+
+void MainWindow::refreshQuotes()
+{
+    assert(appSettings_->contains(APP_SETTINGS_KEY_QUOTES_DIR));
+    QString quoteFileDirName = appSettings_->value(APP_SETTINGS_KEY_QUOTES_DIR).toString();
+    instrumentListTableView_->populateFromCSVFiles(quoteFileDirName);
 }
 
 MainWindow::~MainWindow()
