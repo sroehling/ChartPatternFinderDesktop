@@ -41,32 +41,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     appSettings_ = QSettingsPtr(new QSettings(QString("configs/PatternRecogSettings.ini"), QSettings::IniFormat));
 
-    QToolBar *toolBar = new QToolBar( this );
-
-    QComboBox *typeBox = new QComboBox( toolBar );
-    typeBox->addItem( "Bars" );
-    typeBox->addItem( "CandleSticks" );
-    typeBox->setCurrentIndex( 1 );
-    typeBox->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
-
-    QToolButton *btnExport = new QToolButton( toolBar );
-    btnExport->setText( "Export" );
-    btnExport->setToolButtonStyle( Qt::ToolButtonTextUnderIcon );
- //   connect( btnExport, SIGNAL( clicked() ), priceAndPatternPlot_, SLOT( exportPlot() ) );
-
-    toolBar->addWidget( typeBox );
-    toolBar->addWidget( btnExport );
-    addToolBar( toolBar );
-
     patternTable_ = new PatternMatchTableView();
     instrumentListTableView_ = new InstrumentListTableView();
 
     stackedStockCharts_ = new StackedStockCharts(this);
     priceAndPatternPlot_ = stackedStockCharts_->priceAndPatternPlot();
-
-    priceAndPatternPlot_->setMode( typeBox->currentIndex() );
-    connect( typeBox, SIGNAL( currentIndexChanged( int ) ),
-        priceAndPatternPlot_, SLOT( setMode( int ) ) );
 
     QVBoxLayout *lhsLayout = new QVBoxLayout();
     lhsLayout->addWidget(instrumentListTableView_);
