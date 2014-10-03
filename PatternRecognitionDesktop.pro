@@ -66,6 +66,8 @@ HEADERS  += \
     VolumeYAxisScaleDraw.h
 
 
+RESOURCES += icons.qrc
+
 ## PatternRecognitionLib is linked from the library built within the sub-module
 macx: LIBS += -L$$PWD/lib/PatternRecognitionLib/build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Debug/ -lPatternRecognitionLib
 macx: PRE_TARGETDEPS += $$PWD/lib/PatternRecognitionLib/build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Debug/libPatternRecognitionLib.a
@@ -95,3 +97,6 @@ INCLUDEPATH += $$PWD/lib/PatternRecognitionLib/src/chartSegment\
     $$PWD/lib/PatternRecognitionLib/src/patternScan\
     $$PWD/lib/PatternRecognitionLib/src/patternShape\
     $$PWD/lib/PatternRecognitionLib/src/quoteData
+
+OTHER_FILES += \
+    icons/buttonhelp.png

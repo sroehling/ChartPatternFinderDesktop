@@ -14,6 +14,9 @@ StackedStockCharts::StackedStockCharts(QWidget *parent ):
 {
     QGridLayout *layout = new QGridLayout( this );
 
+    layout->setSpacing(0);
+    layout->setMargin(4);
+
     priceAndPatternPlot_ = new Plot(this);
     layout->addWidget( priceAndPatternPlot_,0,0 );
 
@@ -22,6 +25,9 @@ StackedStockCharts::StackedStockCharts(QWidget *parent ):
 
     layout->setRowStretch(0,80);
     layout->setRowStretch(1,20);
+
+    setObjectName("stackedStockCharts");
+    setStyleSheet("#stackedStockCharts { border: 2px solid gray; }");
 
     connect( priceAndPatternPlot_->axisWidget( QwtPlot::xBottom ),
         SIGNAL( scaleDivChanged() ), SLOT( scaleDivChanged() ) );

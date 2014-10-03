@@ -22,18 +22,13 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include "StackedStockCharts.h"
+#include <QDesktopServices>
 #include <QPushButton>
 #include <QStyle>
+#include <QLabel>
 
 #define APP_SETTINGS_KEY_QUOTES_DIR "QUOTES_DIR"
 
-void MainWindow::initMenus()
-{
-    QMenu *fileMenu = menuBar()->addMenu(tr("&File"));
-    QAction *selectQuotesDirAction = new QAction(tr("&Select Quotes Directory..."), this);
-    fileMenu->addAction(selectQuotesDirAction);
-    connect(selectQuotesDirAction, SIGNAL(triggered()), this, SLOT(actionSelectQuotesDir()));
-}
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
@@ -59,16 +54,35 @@ MainWindow::MainWindow(QWidget *parent) :
     refreshQuotesButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
     lhsLayout->addWidget(refreshQuotesButton);
 
-
     QWidget *lhsContent = new QWidget();
     lhsContent->setLayout(lhsLayout);
 
+    QLabel *websiteLinkLabel = new QLabel();
+    websiteLinkLabel->setOpenExternalLinks(true);
+    websiteLinkLabel->setText("<a href=\"http://www.resultra.com\">www.resultra.com</a>");
+
+    QLabel *helpLinkLabel = new QLabel();
+    helpLinkLabel->setOpenExternalLinks(true);
+    helpLinkLabel->setText("<a href=\"http://www.resultra.com\">help</a>");
+    helpLinkLabel->setPixmap(QPixmap(":/icons/help-button"));
+
+    QPushButton *helpButton = new QPushButton("Help");
+    helpButton->setIcon(QPixmap(":/icons/help-button"));
+    connect(helpButton,SIGNAL(clicked()),this,SLOT(openHelpUrl()));
+
+    QHBoxLayout *infoLayout = new QHBoxLayout();
+    infoLayout->addWidget(websiteLinkLabel,50,Qt::AlignLeft);
+    infoLayout->addWidget(helpButton,50,Qt::AlignRight);
+
 
     QVBoxLayout *chartAndPatternListLayout = new QVBoxLayout();
+    chartAndPatternListLayout->setSpacing(0);
     chartAndPatternListLayout->addWidget(stackedStockCharts_,30);
     chartAndPatternListLayout->addWidget(patternTable_,10);
+    chartAndPatternListLayout->addLayout(infoLayout,0);
     QWidget *rhsContent = new QWidget();
     rhsContent->setLayout(chartAndPatternListLayout);
+
 
     QSplitter *mainSplitter = new QSplitter(Qt::Horizontal);
     mainSplitter->addWidget(lhsContent);
@@ -87,8 +101,6 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     QString quoteFileDirName = appSettings_->value(APP_SETTINGS_KEY_QUOTES_DIR).toString();
 
-
-    initMenus();
 
     // Layout is finished. Populate the pattern plot and pattern selectin table with some data.
 
@@ -166,4 +178,9 @@ void MainWindow::instrumentSelected(const InstrumentSelectionInfoPtr &instrSelec
        priceAndPatternPlot_->populateOnePatternShape(patternTable_->currentPatternMatches()->front());
     }
 
+}
+
+void MainWindow::openHelpUrl()
+{
+     QDesktopServices::openUrl(QUrl("http://www.resultra.com", QUrl::TolerantMode));
 }

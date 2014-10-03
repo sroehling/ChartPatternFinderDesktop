@@ -24,7 +24,6 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private:
-    void initMenus();
     QString chooseQuotesDir(bool requireChoice);
 
     QSettingsPtr appSettings_;
@@ -46,6 +45,7 @@ public:
 public slots:
     void instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo);
     void patternMatchesSelected(const PatternMatchListPtr &selectedMatch);
+    void openHelpUrl();
 };
 
 #endif // MAINWINDOW_H
