@@ -34,12 +34,7 @@ void PatternMatchTableView::populatePatternMatches(const PatternMatchListPtr &pa
     tableModel->setHorizontalHeaderItem(1,new QStandardItem("Start"));
     tableModel->setHorizontalHeaderItem(2,new QStandardItem("Finish"));
     tableModel->setHorizontalHeaderItem(3,new QStandardItem("Length (periods)"));
-    tableModel->setHorizontalHeaderItem(4,new QStandardItem("High"));
-    tableModel->setHorizontalHeaderItem(5,new QStandardItem("Low"));
-    tableModel->setHorizontalHeaderItem(6,new QStandardItem("Depth %"));
-
-    // Other possible columns: high, low, confirmation
-
+    tableModel->setHorizontalHeaderItem(4,new QStandardItem("Confirmation"));
 
 
     unsigned int rowNum = 0;
@@ -71,14 +66,16 @@ void PatternMatchTableView::populatePatternMatches(const PatternMatchListPtr &pa
         tableModel->setItem(rowNum,colNum,new QStandardItem(QString().sprintf("%d",(*matchIter)->numPeriods())));
         colNum++;
 
-        tableModel->setItem(rowNum,colNum,new QStandardItem(QString().sprintf("%.2f",(*matchIter)->highestHigh())));
+        if((*matchIter)->isConfirmedMatch())
+        {
+            tableModel->setItem(rowNum,colNum,new QStandardItem(QString().sprintf("%.2f",(*matchIter)->confirmationPrice())));
+         }
+        else
+        {
+            tableModel->setItem(rowNum,colNum,new QStandardItem("Still Forming"));
+        }
         colNum++;
 
-        tableModel->setItem(rowNum,colNum,new QStandardItem(QString().sprintf("%.2f",(*matchIter)->lowestLow())));
-        colNum++;
-
-        tableModel->setItem(rowNum,colNum,new QStandardItem(QString().sprintf("%.1f%%",(*matchIter)->depthPercent())));
-        colNum++;
 
         rowNum++;
     }
