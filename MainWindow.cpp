@@ -28,13 +28,17 @@
 #include <QLabel>
 
 #define APP_SETTINGS_KEY_QUOTES_DIR "QUOTES_DIR"
-
+#define APP_NAME_TITLE "Chart Pattern Finder"
+#define APP_SETTING_FILE "configs/ChartPatternFinderSettings.ini"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
 
-    appSettings_ = QSettingsPtr(new QSettings(QString("configs/PatternRecogSettings.ini"), QSettings::IniFormat));
+
+    this->setWindowTitle(APP_NAME_TITLE);
+
+    appSettings_ = QSettingsPtr(new QSettings(QString(APP_SETTING_FILE), QSettings::IniFormat));
 
     patternTable_ = new PatternMatchTableView();
     instrumentListTableView_ = new InstrumentListTableView();
@@ -59,11 +63,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QLabel *websiteLinkLabel = new QLabel();
     websiteLinkLabel->setOpenExternalLinks(true);
-    websiteLinkLabel->setText("<a href=\"http://www.resultra.com\">www.resultra.com</a>");
+    websiteLinkLabel->setText("<a href=\"http://www.chartpatternfinder.com\">www.ChartPatternFinder.com</a>");
 
     QLabel *helpLinkLabel = new QLabel();
     helpLinkLabel->setOpenExternalLinks(true);
-    helpLinkLabel->setText("<a href=\"http://www.resultra.com\">help</a>");
+    helpLinkLabel->setText("<a href=\"http://www.chartpatternfinder.com/help\">help</a>");
     helpLinkLabel->setPixmap(QPixmap(":/icons/help-button"));
 
     QPushButton *helpButton = new QPushButton("Help");
