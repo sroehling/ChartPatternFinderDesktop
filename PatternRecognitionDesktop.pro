@@ -11,6 +11,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = "Chart Pattern Finder"
 TEMPLATE = app
 
+win32:RC_FILE = ChartPatternFinder.rc
+
 # Configure compiling and linking against libc++ instead of libstdc++
 # This is needed to ensure consistency for all components, including
 # the boost library.
@@ -99,4 +101,6 @@ INCLUDEPATH += $$PWD/lib/PatternRecognitionLib/src/chartSegment\
     $$PWD/lib/PatternRecognitionLib/src/quoteData
 
 OTHER_FILES += \
-    icons/buttonhelp.png
+    icons/buttonhelp.png \
+    icons/chartpatternfinder.ico \
+    ChartPatternFinder.rc
