@@ -1,6 +1,18 @@
 <!DOCTYPE RCC>
 <RCC>
 <qresource prefix="/icons">
- <file alias="help-button">icons/buttonhelp.png</file>
+ <file alias="help-button">icons/cpf-help.png</file>
+</qresource>
+<qresource prefix="/icons">
+ <file alias="upgrade-button">icons/cpf-upgrade.png</file>
+</qresource>
+<qresource prefix="/icons">
+ <file alias="register-button">icons/cpf-register.png</file>
+</qresource>
+<qresource prefix="/icons">
+ <file alias="load-quotes">icons/cpf-loadquotes.png</file>
+</qresource>
+<qresource prefix="/icons">
+ <file alias="reload-quotes">icons/cpf-reloadquotes.png</file>
 </qresource>
 </RCC>

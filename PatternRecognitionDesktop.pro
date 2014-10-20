@@ -42,7 +42,8 @@ SOURCES += main.cpp\
     StackedStockCharts.cpp \
     VolumePlot.cpp \
     VolumePlotCurve.cpp \
-    VolumeYAxisScaleDraw.cpp
+    VolumeYAxisScaleDraw.cpp \
+    RegisterDialog.cpp
 
 HEADERS  += \
     griditem.h \
@@ -65,7 +66,8 @@ HEADERS  += \
     StackedStockCharts.h \
     VolumePlot.h \
     VolumePlotCurve.h \
-    VolumeYAxisScaleDraw.h
+    VolumeYAxisScaleDraw.h \
+    RegisterDialog.h
 
 
 RESOURCES += icons.qrc
@@ -101,6 +103,10 @@ INCLUDEPATH += $$PWD/lib/PatternRecognitionLib/src/chartSegment\
     $$PWD/lib/PatternRecognitionLib/src/quoteData
 
 OTHER_FILES += \
-    icons/buttonhelp.png \
     icons/chartpatternfinder.ico \
-    ChartPatternFinder.rc
+    ChartPatternFinder.rc \
+    icons/cpf-loadquotes.png \
+    icons/cpf-register.png \
+    icons/cpf-reloadquotes.png \
+    icons/cpf-upgrade.png \
+    icons/cpf-help.png

@@ -46,6 +46,8 @@ public slots:
     void instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo);
     void patternMatchesSelected(const PatternMatchListPtr &selectedMatch);
     void openHelpUrl();
+    void openRegisterDialog();
+    void openBuyUrl();
 };
 
 #endif // MAINWINDOW_H

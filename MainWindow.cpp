@@ -3,6 +3,7 @@
 #include <qtoolbar.h>
 #include <qtoolbutton.h>
 #include "plot.h"
+#include "RegisterDialog.h"
 
 #include <QTableView>
 #include <QTableWidget>
@@ -34,8 +35,6 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
-
-
     this->setWindowTitle(APP_NAME_TITLE);
 
     appSettings_ = QSettingsPtr(new QSettings(QString(APP_SETTING_FILE), QSettings::IniFormat));
@@ -51,11 +50,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QPushButton *openQuotesButton = new QPushButton("Open Quotes");
     connect(openQuotesButton,SIGNAL(clicked()),this,SLOT(actionSelectQuotesDir()));
-    openQuotesButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_DirOpenIcon));
+    openQuotesButton->setIcon(QPixmap(":/icons/load-quotes"));
     lhsLayout->addWidget(openQuotesButton);
 
     QPushButton *refreshQuotesButton = new QPushButton("Reload Quotes");
-    refreshQuotesButton->setIcon(QApplication::style()->standardIcon(QStyle::SP_BrowserReload));
+    refreshQuotesButton->setIcon(QPixmap(":/icons/reload-quotes"));
     lhsLayout->addWidget(refreshQuotesButton);
 
     QWidget *lhsContent = new QWidget();
@@ -65,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     websiteLinkLabel->setOpenExternalLinks(true);
     websiteLinkLabel->setText("<a href=\"http://www.chartpatternfinder.com\">www.ChartPatternFinder.com</a>");
 
+    // Help Button
     QLabel *helpLinkLabel = new QLabel();
     helpLinkLabel->setOpenExternalLinks(true);
     helpLinkLabel->setText("<a href=\"http://www.chartpatternfinder.com/help\">help</a>");
@@ -74,10 +74,22 @@ MainWindow::MainWindow(QWidget *parent) :
     helpButton->setIcon(QPixmap(":/icons/help-button"));
     connect(helpButton,SIGNAL(clicked()),this,SLOT(openHelpUrl()));
 
-    QHBoxLayout *infoLayout = new QHBoxLayout();
-    infoLayout->addWidget(websiteLinkLabel,50,Qt::AlignLeft);
-    infoLayout->addWidget(helpButton,50,Qt::AlignRight);
+    QPushButton *buyButton = new QPushButton("Buy Full Version");
+    buyButton->setIcon(QPixmap(":/icons/upgrade-button"));
+    connect(buyButton,SIGNAL(clicked()),this,SLOT(openBuyUrl()));
 
+    QPushButton *registerButton = new QPushButton("Register ...");
+    registerButton->setIcon(QPixmap(":/icons/register-button"));
+    connect(registerButton,SIGNAL(clicked()),this,SLOT(openRegisterDialog()));
+
+    // Main Layout
+    QHBoxLayout *infoLayout = new QHBoxLayout();
+    infoLayout->addWidget(websiteLinkLabel,100,Qt::AlignLeft);
+    infoLayout->addWidget(buyButton,0,Qt::AlignRight);
+    infoLayout->addSpacerItem(new QSpacerItem(10,10));
+    infoLayout->addWidget(registerButton,0,Qt::AlignRight);
+    infoLayout->addSpacerItem(new QSpacerItem(10,10));
+    infoLayout->addWidget(helpButton,0,Qt::AlignRight);
 
     QVBoxLayout *chartAndPatternListLayout = new QVBoxLayout();
     chartAndPatternListLayout->setSpacing(0);
@@ -167,7 +179,6 @@ void MainWindow::patternMatchesSelected(const PatternMatchListPtr &selectedMatch
 
 void MainWindow::instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo)
 {
-
     assert(instrSelectionInfo->patternScanComplete());
     PatternMatchListPtr currentPatternMatches = instrSelectionInfo->patternMatches();
 
@@ -186,5 +197,16 @@ void MainWindow::instrumentSelected(const InstrumentSelectionInfoPtr &instrSelec
 
 void MainWindow::openHelpUrl()
 {
-     QDesktopServices::openUrl(QUrl("http://www.resultra.com", QUrl::TolerantMode));
+     QDesktopServices::openUrl(QUrl("http://www.chartpatternfinder.com/support", QUrl::TolerantMode));
+}
+
+void MainWindow::openBuyUrl()
+{
+     QDesktopServices::openUrl(QUrl("http://www.chartpatternfinder.com/buy", QUrl::TolerantMode));
+}
+
+void MainWindow::openRegisterDialog()
+{
+    RegisterDialog *regDialog = new RegisterDialog;
+    regDialog->show();
 }
