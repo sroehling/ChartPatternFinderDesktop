@@ -1,3 +1,6 @@
 [submodule "lib/PatternRecognitionLib"]
 	path = lib/PatternRecognitionLib
 	url = git@macmini.local:/Users/git/PatternRecognitionLib.git
+[submodule "lib/LicenseKey"]
+	path = lib/LicenseKey
+	url = git@macmini.local:/Users/git/LicenseKey.git

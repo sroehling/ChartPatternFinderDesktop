@@ -16,6 +16,8 @@ private:
 
     void enableRegistration();
     void disableRegistration();
+    bool currentLicenseKeyEntryValid();
+    void updateRegistrationEnabled();
 public:
     explicit RegisterDialog(QWidget *parent = 0);
 

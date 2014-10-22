@@ -3,6 +3,7 @@
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QDebug>
+#include "LicenseKey.h"
 
 RegisterDialog::RegisterDialog(QWidget *parent) :
     QDialog(parent)
@@ -75,19 +76,41 @@ void RegisterDialog::disableRegistration()
     cancelButton_->setDefault(true);
 }
 
+bool RegisterDialog::currentLicenseKeyEntryValid()
+{
+    if(licenseKey::validLicenseKey(emailEntry_->text(),licenseKeyEntry_->text()))
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+void RegisterDialog::updateRegistrationEnabled()
+{
+    if(currentLicenseKeyEntryValid())
+    {
+        enableRegistration();
+    }
+    else
+    {
+        disableRegistration();
+    }
+}
+
 
 void RegisterDialog::emailTextChanged(const QString &emailText)
 {
     qDebug() << "Email text changed:" << emailText;
-    enableRegistration();
+    updateRegistrationEnabled();
 }
 
 void RegisterDialog::licenseTextChanged(const QString &licenseText)
 {
     qDebug() << "License key text changed:" << licenseText;
-    enableRegistration();
-
-
+    updateRegistrationEnabled();
 }
 
 void RegisterDialog::registerButtonClicked()
