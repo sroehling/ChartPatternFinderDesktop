@@ -27,19 +27,24 @@
 #include <QPushButton>
 #include <QStyle>
 #include <QLabel>
+#include "SettingsHelper.h"
 
 #define APP_SETTINGS_KEY_QUOTES_DIR "QUOTES_DIR"
 #define APP_NAME_TITLE "Chart Pattern Finder"
-#define APP_SETTING_FILE "configs/ChartPatternFinderSettings.ini"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     this->setWindowTitle(APP_NAME_TITLE);
 
-    appSettings_ = QSettingsPtr(new QSettings(QString(APP_SETTING_FILE), QSettings::IniFormat));
+    appSettings_ = settingsHelper::openUserSettings();
+    qDebug() << "Application settings file: " << appSettings_->fileName();
 
-    patternTable_ = new PatternMatchTableView();
+    LicenseRegistration_ = LicenseRegistrationPtr(new LicenseRegistration());
+    connect(LicenseRegistration_.get(), SIGNAL(licenseRegistrationComplete()),
+              this, SLOT(licenseRegistrationComplete()));
+
+    patternTable_ = new PatternMatchTableView(LicenseRegistration_);
     instrumentListTableView_ = new InstrumentListTableView();
 
     stackedStockCharts_ = new StackedStockCharts(this);
@@ -74,20 +79,20 @@ MainWindow::MainWindow(QWidget *parent) :
     helpButton->setIcon(QPixmap(":/icons/help-button"));
     connect(helpButton,SIGNAL(clicked()),this,SLOT(openHelpUrl()));
 
-    QPushButton *buyButton = new QPushButton("Buy Full Version");
-    buyButton->setIcon(QPixmap(":/icons/upgrade-button"));
-    connect(buyButton,SIGNAL(clicked()),this,SLOT(openBuyUrl()));
+    buyButton_ = new QPushButton("Buy Full Version");
+    buyButton_->setIcon(QPixmap(":/icons/upgrade-button"));
+    connect(buyButton_,SIGNAL(clicked()),this,SLOT(openBuyUrl()));
 
-    QPushButton *registerButton = new QPushButton("Register ...");
-    registerButton->setIcon(QPixmap(":/icons/register-button"));
-    connect(registerButton,SIGNAL(clicked()),this,SLOT(openRegisterDialog()));
+    registerButton_ = new QPushButton("Register ...");
+    registerButton_->setIcon(QPixmap(":/icons/register-button"));
+    connect(registerButton_,SIGNAL(clicked()),this,SLOT(openRegisterDialog()));
 
     // Main Layout
     QHBoxLayout *infoLayout = new QHBoxLayout();
     infoLayout->addWidget(websiteLinkLabel,100,Qt::AlignLeft);
-    infoLayout->addWidget(buyButton,0,Qt::AlignRight);
+    infoLayout->addWidget(buyButton_,0,Qt::AlignRight);
     infoLayout->addSpacerItem(new QSpacerItem(10,10));
-    infoLayout->addWidget(registerButton,0,Qt::AlignRight);
+    infoLayout->addWidget(registerButton_,0,Qt::AlignRight);
     infoLayout->addSpacerItem(new QSpacerItem(10,10));
     infoLayout->addWidget(helpButton,0,Qt::AlignRight);
 
@@ -118,11 +123,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QString quoteFileDirName = appSettings_->value(APP_SETTINGS_KEY_QUOTES_DIR).toString();
 
 
+    if(LicenseRegistration_->fullVersionLicenseRegistered())
+    {
+        configureUIForFullVersion();
+    }
+
     // Layout is finished. Populate the pattern plot and pattern selectin table with some data.
 
     connect(patternTable_, SIGNAL(patternMatchesSelected (const PatternMatchListPtr &)),
               this, SLOT(patternMatchesSelected(const PatternMatchListPtr &)));
-
     connect(instrumentListTableView_, SIGNAL(instrumentSelected (const InstrumentSelectionInfoPtr &)),
               this, SLOT(instrumentSelected(const InstrumentSelectionInfoPtr &)));
 
@@ -205,8 +214,20 @@ void MainWindow::openBuyUrl()
      QDesktopServices::openUrl(QUrl("http://www.chartpatternfinder.com/buy", QUrl::TolerantMode));
 }
 
+void MainWindow::configureUIForFullVersion()
+{
+    registerButton_->hide();
+    buyButton_->hide();
+}
+
 void MainWindow::openRegisterDialog()
 {
-    RegisterDialog *regDialog = new RegisterDialog;
+    RegisterDialog *regDialog = new RegisterDialog(LicenseRegistration_);
     regDialog->show();
+}
+
+void MainWindow::licenseRegistrationComplete()
+{
+    qDebug() << "Main Window: License Registration complete";
+    configureUIForFullVersion();
 }

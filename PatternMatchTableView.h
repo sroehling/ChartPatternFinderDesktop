@@ -3,13 +3,16 @@
 
 #include <QTableView>
 #include "PatternMatch.h"
+#include "LicenseRegistration.h"
 
 class PatternMatchTableView : public QTableView
 {
     Q_OBJECT
 
+private:
+    LicenseRegistrationPtr licenseRegistration_;
 public:
-    explicit PatternMatchTableView();
+    explicit PatternMatchTableView(const LicenseRegistrationPtr &licenseRegistration);
     void populatePatternMatches(const PatternMatchListPtr &patternMatches);
     const PatternMatchListPtr currentPatternMatches() const { return currentPatternMatches_; }
 signals:

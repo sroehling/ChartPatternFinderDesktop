@@ -4,11 +4,13 @@
 #include <QLabel>
 #include <QDebug>
 #include "LicenseKey.h"
+#include "LicenseRegistration.h"
 
-RegisterDialog::RegisterDialog(QWidget *parent) :
-    QDialog(parent)
+RegisterDialog::RegisterDialog(const LicenseRegistrationPtr &licenseRegistration) :
+    QDialog(0)
 {
     setModal(true);
+    licenseRegistration_ = licenseRegistration;
 
     QLabel *helpLabel = new QLabel();
     helpLabel->setOpenExternalLinks(true);
@@ -116,6 +118,9 @@ void RegisterDialog::licenseTextChanged(const QString &licenseText)
 void RegisterDialog::registerButtonClicked()
 {
     qDebug() << "Register button clicked";
+    assert(licenseKey::validLicenseKey(emailEntry_->text(),licenseKeyEntry_->text()));
+    licenseRegistration_->registerLicenseKey(emailEntry_->text(),licenseKeyEntry_->text());
+    close();
 
 }
 

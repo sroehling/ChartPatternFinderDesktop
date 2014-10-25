@@ -5,15 +5,14 @@
 #include "plot.h"
 #include <QItemSelectionModel>
 #include <QTableView>
+#include <QPushButton>
 #include "PatternMatch.h"
 #include "PatternMatchTableView.h"
 #include "InstrumentListTableView.h"
 #include "QSettings"
-#include <boost/shared_ptr.hpp>
 #include "StackedStockCharts.h"
-
-typedef boost::shared_ptr<QSettings> QSettingsPtr;
-
+#include "SettingsHelper.h"
+#include "LicenseRegistration.h"
 
 namespace Ui {
 class MainWindow;
@@ -27,12 +26,18 @@ private:
     QString chooseQuotesDir(bool requireChoice);
 
     QSettingsPtr appSettings_;
+    LicenseRegistrationPtr LicenseRegistration_;
 
     Plot *priceAndPatternPlot_;
     StackedStockCharts *stackedStockCharts_;
 
     PatternMatchTableView* patternTable_;
     InstrumentListTableView *instrumentListTableView_;
+
+    QPushButton *registerButton_;
+    QPushButton *buyButton_;
+
+    void configureUIForFullVersion();
 
 private slots:
      void actionSelectQuotesDir();
@@ -47,6 +52,7 @@ public slots:
     void patternMatchesSelected(const PatternMatchListPtr &selectedMatch);
     void openHelpUrl();
     void openRegisterDialog();
+    void licenseRegistrationComplete();
     void openBuyUrl();
 };
 

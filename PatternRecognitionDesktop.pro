@@ -43,7 +43,9 @@ SOURCES += main.cpp\
     VolumePlot.cpp \
     VolumePlotCurve.cpp \
     VolumeYAxisScaleDraw.cpp \
-    RegisterDialog.cpp
+    RegisterDialog.cpp \
+    LicenseRegistration.cpp \
+    SettingsHelper.cpp
 
 HEADERS  += \
     griditem.h \
@@ -67,7 +69,9 @@ HEADERS  += \
     VolumePlot.h \
     VolumePlotCurve.h \
     VolumeYAxisScaleDraw.h \
-    RegisterDialog.h
+    RegisterDialog.h \
+    LicenseRegistration.h \
+    SettingsHelper.h
 
 
 RESOURCES += icons.qrc

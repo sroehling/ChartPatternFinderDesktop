@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QLineEdit>
 #include <QPushButton>
+#include "LicenseRegistration.h"
 
 class RegisterDialog : public QDialog
 {
@@ -14,12 +15,14 @@ private:
     QPushButton *registerButton_;
     QPushButton *cancelButton_;
 
+    LicenseRegistrationPtr licenseRegistration_;
+
     void enableRegistration();
     void disableRegistration();
     bool currentLicenseKeyEntryValid();
     void updateRegistrationEnabled();
 public:
-    explicit RegisterDialog(QWidget *parent = 0);
+    explicit RegisterDialog(const LicenseRegistrationPtr &licenseRegistration);
 
 signals:
 
