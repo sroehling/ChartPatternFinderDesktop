@@ -76,14 +76,30 @@ HEADERS  += \
 
 RESOURCES += icons.qrc
 
-## PatternRecognitionLib is linked from the library built within the sub-module
-macx: LIBS += -L$$PWD/lib/PatternRecognitionLib/build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Debug/ -lPatternRecognitionLib
-macx: PRE_TARGETDEPS += $$PWD/lib/PatternRecognitionLib/build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Debug/libPatternRecognitionLib.a
-macx: LIBS += -L$$PWD/lib/LicenseKey/build-LicenseKeyLib-Desktop_Qt_5_3_clang_64bit-Debug -lLicenseKeyLib
-macx: PRE_TARGETDEPS += $$PWD/lib/LicenseKey/build-LicenseKeyLib-Desktop_Qt_5_3_clang_64bit-Debug/libLicenseKeyLib.a
 
-win32: LIBS += -L$$PWD/lib/PatternRecognitionLib/build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Debug/debug/ -lPatternRecognitionLib
-win32: PRE_TARGETDEPS += $$PWD/lib/PatternRecognitionLib/build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Debug/debug/libPatternRecognitionLib.a
+CONFIG(debug, debug|release) {
+unix: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_GCC_64bit-Debug
+macx: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_clang_64bit-Debug
+macx: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Debug
+win32: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_MinGW_32bit-Debug\debug
+win32: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Debug\debug
+} else {
+unix: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_GCC_64bit-Release
+macx: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_clang_64bit-Release
+macx: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Release
+win32: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_MinGW_32bit-Release\release
+win32: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Release\release
+DEFINES += QT_NO_DEBUG_OUTPUT
+}
+
+## PatternRecognitionLib is linked from the library built within the sub-module
+
+LIBS += -L$$PWD/lib/PatternRecognitionLib/$$PATTERNRECOGLIBDIR -lPatternRecognitionLib
+PRE_TARGETDEPS += $$PWD/lib/PatternRecognitionLib/$$PATTERNRECOGLIBDIR/libPatternRecognitionLib.a
+
+LIBS += -L$$PWD/lib/LicenseKey/$$LICENSEKEYLIBDIR -lLicenseKeyLib
+PRE_TARGETDEPS += $$PWD/lib/LicenseKey/$$LICENSEKEYLIBDIR/libLicenseKeyLib.a
+
 
 ## Link with pre-built version of Boost.
 # IMPORTANT: To avoid link errors, the boost libraries must come *after* PatternRecognitionLib in the
