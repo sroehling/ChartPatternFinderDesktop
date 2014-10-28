@@ -1,3 +1,6 @@
+; Use the 'Modern' UI System
+
+!include MUI2.nsh
 
 
 
@@ -22,10 +25,34 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Installer Interface Options
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;--------------------------------
+;Pages
+
+  !insertmacro MUI_PAGE_LICENSE "Chart Pattern Finder License.txt"
+  !insertmacro MUI_PAGE_COMPONENTS
+  !insertmacro MUI_PAGE_DIRECTORY
+  !insertmacro MUI_PAGE_INSTFILES
+  
+  !insertmacro MUI_UNPAGE_CONFIRM
+  !insertmacro MUI_UNPAGE_INSTFILES
+  
+;--------------------------------
+;Languages
+ 
+  !insertmacro MUI_LANGUAGE "English"
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Global Configuration Options
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Name "${PRODUCT_NAME}"
+
+; Force installer to do a CRC check on itself before installing.
+CRCCheck force
 
 ; Configure for Modern UI System
 
@@ -81,13 +108,21 @@ WriteUninstaller "$INSTDIR\${UNINSTALLER_EXE_NAME}"
 
 SectionEnd ; end Application section
 
-; Optional section, create Startmenu entries
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Optional Sections - Start menu and desktop shortcuts
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 Section "Start Menu Shortcuts"
 
 CreateDirectory "${START_MENU_DIR}"
 CreateShortCut "${START_MENU_DIR}\Launch ${PRODUCT_NAME}.lnk" "$INSTDIR\${EXE_NAME}"
 CreateShortCut "${START_MENU_DIR}\Uninstall ${PRODUCT_NAME}.lnk" "$INSTDIR\${UNINSTALLER_EXE_NAME}"
+
+CreateShortCut "${DESKTOP_LINK}" "$INSTDIR\${EXE_NAME}"
+
+SectionEnd ; end the section
+
+Section "Desktop Shortcut"
 
 CreateShortCut "${DESKTOP_LINK}" "$INSTDIR\${EXE_NAME}"
 
@@ -128,3 +163,4 @@ FunctionEnd
 Function un.onUninstSuccess
   MessageBox MB_OK "You have successfully uninstalled ${PRODUCT_NAME}."
 FunctionEnd
+
