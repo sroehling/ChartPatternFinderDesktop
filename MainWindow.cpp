@@ -67,12 +67,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QLabel *websiteLinkLabel = new QLabel();
     websiteLinkLabel->setOpenExternalLinks(true);
-    websiteLinkLabel->setText("<a href=\"http://www.chartpatternfinder.com\">www.ChartPatternFinder.com</a>");
+    websiteLinkLabel->setText("<a href=\"https://www.chartpatternfinder.com\">ChartPatternFinder.com</a>");
 
     // Help Button
     QLabel *helpLinkLabel = new QLabel();
     helpLinkLabel->setOpenExternalLinks(true);
-    helpLinkLabel->setText("<a href=\"http://www.chartpatternfinder.com/help\">help</a>");
+    helpLinkLabel->setText("<a href=\"https://www.chartpatternfinder.com/help\">help</a>");
     helpLinkLabel->setPixmap(QPixmap(":/icons/help-button"));
 
     QPushButton *helpButton = new QPushButton("Help");
