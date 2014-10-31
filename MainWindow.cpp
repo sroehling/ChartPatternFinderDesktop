@@ -61,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QPushButton *refreshQuotesButton = new QPushButton("Reload Quotes");
     refreshQuotesButton->setIcon(QPixmap(":/icons/reload-quotes"));
     lhsLayout->addWidget(refreshQuotesButton);
+    connect(refreshQuotesButton,SIGNAL(clicked()),this,SLOT(actionRefreshQuotes()));
 
     QWidget *lhsContent = new QWidget();
     lhsContent->setLayout(lhsLayout);
@@ -170,7 +171,7 @@ void MainWindow::actionSelectQuotesDir()
     }
 }
 
-void MainWindow::refreshQuotes()
+void MainWindow::actionRefreshQuotes()
 {
     assert(appSettings_->contains(APP_SETTINGS_KEY_QUOTES_DIR));
     QString quoteFileDirName = appSettings_->value(APP_SETTINGS_KEY_QUOTES_DIR).toString();
