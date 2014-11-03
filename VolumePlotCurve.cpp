@@ -9,18 +9,64 @@ VolumePlotCurve::VolumePlotCurve(const PeriodValSegmentPtr &chartData)
 
     QVector<QwtOHLCSample> chartDataSamples;
     chartDataSamples.reserve(chartData->numVals());
+
+    bool firstVol = true;
+    double prevClose = -1.0;
     for(PeriodValCltn::iterator chartDataIter = chartData->segBegin();
         chartDataIter != chartData->segEnd(); chartDataIter++)
     {
         double volume = (*chartDataIter).volume();
 
-        // Overload the OHLC data to display the volume. This ensures when the volume
-        // data will align with the candlesticks. Color-coding negative vs. positive volume is
-        // also possible.
-        double open = 0.0;
-        double low = 0.0;
-        double high = volume;
-        double close = volume;
+        // Overload the open,high,low, close data to hold
+        // the "starting" and "ending" volume. The height of the
+        // volume bar is always the actual volume, but the opening
+        // and closing values are toggled to show the closing price
+        // rising or closing with the volume.
+        double startVol = 0.0;
+        double endVol = 0.0;
+        if(firstVol)
+        {
+            if((*chartDataIter).close() > (*chartDataIter).open())
+            {
+                startVol = 0.0;
+                endVol = volume;
+            }
+            else
+            {
+                startVol = volume;
+                endVol = 0.0;
+            }
+
+            firstVol = false;
+        }
+        else
+        {
+            assert(prevClose >= 0.0);
+            if((*chartDataIter).close() >= prevClose)
+            {
+                startVol = 0.0;
+                endVol = volume;
+            }
+            else
+            {
+                startVol = volume;
+                endVol = 0.0;
+            }
+        }
+        prevClose = (*chartDataIter).close();
+
+        double open, high, low, close;
+
+        if(startVol < endVol)
+        {
+            open = low = startVol;
+            high = close = endVol;
+        }
+        else
+        {
+            open = high = startVol;
+            low = close = endVol;
+        }
 
         chartDataSamples += PseudoTimeOHLCSample(
                     (*chartDataIter).pseudoXVal(),
@@ -42,7 +88,7 @@ VolumePlotCurve::VolumePlotCurve(const PeriodValSegmentPtr &chartData)
 
     setSymbolPen( Qt::black );
     setSymbolBrush( QwtPlotTradingCurve::Decreasing, Qt::red );
-    setSymbolBrush( QwtPlotTradingCurve::Increasing, Qt::white );
+    setSymbolBrush( QwtPlotTradingCurve::Increasing, Qt::darkGray );
 
 
 }
