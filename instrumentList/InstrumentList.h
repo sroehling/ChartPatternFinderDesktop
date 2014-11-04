@@ -3,10 +3,13 @@
 
 #include <boost/shared_ptr.hpp>
 #include <QMutex>
+#include <QObject>
 #include "InstrumentSelectionInfo.h"
+#include "InstrumentListTypes.h"
 
-class InstrumentList
+class InstrumentList: public QObject
 {
+        Q_OBJECT
 private:
     InstrumentSelectionInfoVector instrumentInfo_;
 
@@ -18,6 +21,8 @@ private:
     // list, this allows the scanning threads to gracefully exit.
     bool listIsObsolete_;
 
+    InstrumentListTaskList taskList_;
+
 public:
     InstrumentList(const QString &quoteFilePath);
 
@@ -28,15 +33,20 @@ public:
     // information even before the patterns are finished scanning.
     const InstrumentSelectionInfoPtr &instrInfo(unsigned int instrNum) const;
 
+    void addInstrumentSelectionInfo(const InstrumentSelectionInfoPtr &instrSelInfo);
+
     const InstrumentSelectionInfoPtr instrInfoWithScannedPatterns(unsigned int instrNum);
 
-    // Return the next instrument for scanning, or NULL if there are no more.
-    InstrumentSelectionInfoPtr nextInstrumentForPatternScan();
+    // Return the next instrument list task (reading or scanning), or NULL if there are no more.
+    InstrumentListTaskPtr nextInstrListTask();
 
     void obsoleteList();
 
+signals:
+    void instrumentAdded(unsigned int instrNum);
+
+
 };
 
-typedef boost::shared_ptr<InstrumentList> InstrumentListPtr;
 
 #endif // INSTRUMENTLIST_H

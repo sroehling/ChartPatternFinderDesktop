@@ -19,7 +19,8 @@ private:
     PatternMatchListPtr patternMatches_;
 
 public:
-    InstrumentSelectionInfo(const QDir &directory, const QString &fileName);
+    InstrumentSelectionInfo(const QDir &directory, const QString &fileName,
+                            const PeriodValSegmentPtr chartData);
 
     QString instrumentName() const;
     const PeriodValSegmentPtr &chartData();

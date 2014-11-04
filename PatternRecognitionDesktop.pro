@@ -32,20 +32,23 @@ SOURCES += main.cpp\
     MainWindow.cpp \
     PatternPlotCurve.cpp \
     PatternMatchTableView.cpp \
-    InstrumentListTableView.cpp \
+    instrumentList/InstrumentListTableView.cpp \
     PseudoTimeOHLCSample.cpp \
     BreakoutPlotMarker.cpp \
-    InstrumentSelectionInfo.cpp \
+    instrumentList/InstrumentSelectionInfo.cpp \
     BreakdownPlotMarker.cpp \
-    InstrumentList.cpp \
-    PatternScanWorkerTask.cpp \
+    instrumentList/InstrumentList.cpp \
     StackedStockCharts.cpp \
     VolumePlot.cpp \
     VolumePlotCurve.cpp \
     VolumeYAxisScaleDraw.cpp \
     RegisterDialog.cpp \
     LicenseRegistration.cpp \
-    SettingsHelper.cpp
+    SettingsHelper.cpp \
+    instrumentList/InstrumentListTask.cpp \
+    instrumentList/ReadQuotesFromFile.cpp \
+    instrumentList/InstrumentListWorker.cpp \
+    instrumentList/ScanPatternMatches.cpp
 
 HEADERS  += \
     griditem.h \
@@ -58,21 +61,26 @@ HEADERS  += \
     MainWindow.h \
     PatternPlotCurve.h \
     PatternMatchTableView.h \
-    InstrumentListTableView.h \
+    instrumentList/InstrumentListTableView.h \
     PseudoTimeOHLCSample.h \
     BreakoutPlotMarker.h \
-    InstrumentSelectionInfo.h \
+    instrumentList/InstrumentSelectionInfo.h \
     BreakdownPlotMarker.h \
-    InstrumentList.h \
-    PatternScanWorkerTask.h \
+    instrumentList/InstrumentList.h \
     StackedStockCharts.h \
     VolumePlot.h \
     VolumePlotCurve.h \
     VolumeYAxisScaleDraw.h \
     RegisterDialog.h \
     LicenseRegistration.h \
-    SettingsHelper.h
+    SettingsHelper.h \
+    instrumentList/InstrumentListTask.h \
+    instrumentList/ReadQuotesFromFile.h \
+    instrumentList/InstrumentListWorker.h \
+    instrumentList/ScanPatternMatches.h \
+    instrumentList/InstrumentListTypes.h
 
+INCLUDEPATH += instrumentList
 
 RESOURCES += icons.qrc
 

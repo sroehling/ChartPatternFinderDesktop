@@ -2,6 +2,7 @@
 #define INSTRUMENTLISTTABLEVIEW_H
 
 #include <QTableView>
+#include <QStandardItemModel>
 #include <QDir>
 #include "InstrumentSelectionInfo.h"
 #include "InstrumentList.h"
@@ -13,7 +14,9 @@ class InstrumentListTableView : public QTableView
 private:
     InstrumentListPtr instrumentList_;
 
-    void populateTable();
+    QStandardItemModel *tableModel_;
+
+    void initTable();
     void selectInstrument(int instrNum);
 
 public:
@@ -23,6 +26,7 @@ public:
 public slots:
     void instrumentSelectionChanged (const QItemSelection  &selected,
                                           const QItemSelection  & );
+    void instrumentAddedToList(unsigned int instrNum);
 signals:
     void instrumentSelected(const InstrumentSelectionInfoPtr &instrSelInfo);
 

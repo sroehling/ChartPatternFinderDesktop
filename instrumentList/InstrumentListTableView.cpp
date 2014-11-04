@@ -5,9 +5,9 @@
 #include <QHeaderView>
 #include "InstrumentSelectionInfo.h"
 #include <assert.h>
+#include "InstrumentListWorker.h"
 
 #include <QThreadPool>
-#include "PatternScanWorkerTask.h"
 
 InstrumentListTableView::InstrumentListTableView() :
     QTableView()
@@ -22,25 +22,16 @@ InstrumentListTableView::InstrumentListTableView() :
 }
 
 
-void InstrumentListTableView::populateTable()
+void InstrumentListTableView::initTable()
 {
+    // This will initialize the table, but wait for calls to instrumentAddedToList
+    // to populate the rows.
     assert(instrumentList_);
-    unsigned int numRows = instrumentList_->numInstruments();
-    unsigned int numCols = 1;
 
-    QStandardItemModel *tableModel = new QStandardItemModel(numRows, numCols,this);
-    tableModel->setHorizontalHeaderItem(0,new QStandardItem("Instrument/Symbol"));
+    tableModel_ = new QStandardItemModel(this);
+    tableModel_->setHorizontalHeaderItem(0,new QStandardItem("Instrument/Symbol"));
 
-    for (unsigned int rowNum=0; rowNum<numRows; rowNum++)
-    {
-
-        InstrumentSelectionInfoPtr instrSelInfo = instrumentList_->instrInfo(rowNum);
-
-        unsigned int colNum = 0;
-        tableModel->setItem(rowNum,colNum,new QStandardItem(instrSelInfo->instrumentName()));
-    }
-
-    setModel(tableModel);
+    setModel(tableModel_);
 
     // Automatically resize the columns to match the width of the table view.
     for (int colNum = 0; colNum < horizontalHeader()->count(); colNum++)
@@ -51,12 +42,29 @@ void InstrumentListTableView::populateTable()
     // selectionModel() will be NULL until the tableModel is set.
     connect(selectionModel(), SIGNAL(selectionChanged (const QItemSelection&, const QItemSelection&)),
               this, SLOT(instrumentSelectionChanged(const QItemSelection &,const QItemSelection &)));
+    connect(instrumentList_.get(),SIGNAL(instrumentAdded(unsigned int)),
+            this,SLOT(instrumentAddedToList(unsigned int)));
 
+}
+
+void InstrumentListTableView::instrumentAddedToList(unsigned int instrNum)
+{
+    InstrumentSelectionInfoPtr instrSelInfo = instrumentList_->instrInfo(instrNum);
+
+    unsigned int colNum = 0;
+    unsigned int rowNum = instrNum;
+    tableModel_->setItem(rowNum,colNum,new QStandardItem(instrSelInfo->instrumentName()));
+
+    if(instrNum == 0)
+    {
+        // initially select the first instrument. This must happen after the slot connection
+        // is established, since this will cause instrumentSelectionChanged() to be called.
+        selectRow(0);
+    }
 }
 
 void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
 {
-
     if(instrumentList_)
     {
         // If there's an existing list, "obsolete" the list, so any scanning which
@@ -65,19 +73,12 @@ void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
     }
     instrumentList_ = InstrumentListPtr(new InstrumentList(quoteFilePath));
 
-    populateTable();
+    initTable();
 
-    if(instrumentList_->numInstruments()>0)
-    {
-        // initially select the first instrument. This must happen after the slot connection
-        // is established, since this will cause instrumentSelectionChanged() to be called.
-        selectRow(0);
-    }
-
-    // Add a couple worker threads to scan each of the instruments (symbols/tickers) in
-    // the instrument list.
-    QThreadPool::globalInstance()->start(new PatternScanWorkerTask(instrumentList_));
-    QThreadPool::globalInstance()->start(new PatternScanWorkerTask(instrumentList_));
+    // Add a couple worker threads to read (and validate) the quote data then scan patterns for each
+    // of the instruments (symbols/tickers).
+    QThreadPool::globalInstance()->start(new InstrumentListWorker(instrumentList_));
+    QThreadPool::globalInstance()->start(new InstrumentListWorker(instrumentList_));
 }
 
 void InstrumentListTableView::selectInstrument(int instrNum)

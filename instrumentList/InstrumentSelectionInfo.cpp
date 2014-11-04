@@ -17,10 +17,11 @@
 #include "DoubleBottomScanner.h"
 
 
-InstrumentSelectionInfo::InstrumentSelectionInfo(const QDir &directory,
-                                                 const QString &fileName)
+InstrumentSelectionInfo::InstrumentSelectionInfo(const QDir &directory, const QString &fileName,
+                                                 const PeriodValSegmentPtr chartData)
     : dir_(directory),
-      fileName_(fileName)
+      fileName_(fileName),
+      chartData_(chartData)
 {
     patternScanInProgress = false;
 }
@@ -37,11 +38,7 @@ QString InstrumentSelectionInfo::instrumentName() const
 
 const PeriodValSegmentPtr &InstrumentSelectionInfo::chartData()
 {
-    if(!chartData_)
-    {
-        QString instrFilePath(dir_.absoluteFilePath(fileName_));
-        chartData_ = PeriodValSegment::readFromFile(instrFilePath.toStdString());
-    }
+    assert(chartData_);
     return chartData_;
 }
 
