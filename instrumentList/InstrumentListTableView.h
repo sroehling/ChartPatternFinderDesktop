@@ -17,11 +17,13 @@ private:
     QStandardItemModel *tableModel_;
 
     void initTable();
+    void obsoleteCurrentInstrumentList();
     void selectInstrument(int instrNum);
 
 public:
     explicit InstrumentListTableView();
     void populateFromCSVFiles(QString quoteFilePath);
+    void appExitCleanupHandler();
 
 public slots:
     void instrumentSelectionChanged (const QItemSelection  &selected,

@@ -25,7 +25,7 @@ public:
     QString instrumentName() const;
     const PeriodValSegmentPtr &chartData();
 
-    void scanPatternMatches();
+    void setPatternMatches(const PatternMatchListPtr &patternMatches);
     const PatternMatchListPtr &patternMatches();
 
     bool patternScanComplete() const;

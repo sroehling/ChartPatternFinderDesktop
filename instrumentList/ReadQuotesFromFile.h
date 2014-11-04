@@ -13,7 +13,7 @@ private:
 public:
     ReadQuotesFromFile(const QDir &directory, const QString &fileName);
 
-    virtual void doTask(const InstrumentListPtr &instrList);
+    virtual void doTask(InstrumentList &instrList);
 };
 
 #endif // READQUOTESFROMFILE_H

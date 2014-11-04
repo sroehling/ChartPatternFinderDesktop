@@ -1,12 +1,16 @@
 #include "mainwindow.h"
 #include <QApplication>
+#include <QObject>
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.resize( 1024, 768 );
-    w.show();
+    QApplication app(argc, argv);
+    MainWindow mainWindow;
 
-    return a.exec();
+    QObject::connect(&app, SIGNAL(aboutToQuit()), &mainWindow, SLOT(appExitCleanupHandler()));
+
+    mainWindow.resize( 1024, 768 );
+    mainWindow.show();
+
+    return app.exec();
 }

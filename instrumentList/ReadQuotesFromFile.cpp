@@ -10,7 +10,7 @@ ReadQuotesFromFile::ReadQuotesFromFile(const QDir &directory, const QString &fil
 {
 }
 
-void ReadQuotesFromFile::doTask(const InstrumentListPtr &instrList)
+void ReadQuotesFromFile::doTask(InstrumentList &instrList)
 {
     // The method PeriodValSegment::readFromFile will fail and throw an exception if the
     // file is not formatted correctly. If this happens, we will not call addInstrumentSelectionInfo,
@@ -21,7 +21,7 @@ void ReadQuotesFromFile::doTask(const InstrumentListPtr &instrList)
         PeriodValSegmentPtr chartData = PeriodValSegment::readFromFile(instrFilePath.toStdString());
 
         InstrumentSelectionInfoPtr instrSelectionInfo(new InstrumentSelectionInfo(dir_,fileName_,chartData));
-        instrList->addInstrumentSelectionInfo(instrSelectionInfo);
+        instrList.addInstrumentSelectionInfo(instrSelectionInfo);
 
     }
     catch(std::exception &readQuotesException)

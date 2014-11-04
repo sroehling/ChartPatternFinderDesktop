@@ -41,6 +41,7 @@ public:
     InstrumentListTaskPtr nextInstrListTask();
 
     void obsoleteList();
+    bool listIsObsolete() const { return listIsObsolete_; }
 
 signals:
     void instrumentAdded(unsigned int instrNum);

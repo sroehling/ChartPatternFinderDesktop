@@ -10,7 +10,7 @@ private:
     InstrumentSelectionInfoPtr instrNeedingScan_;
 public:
     ScanPatternMatches(const InstrumentSelectionInfoPtr &instrNeedingScan);
-    virtual void doTask(const InstrumentListPtr &instrList);
+    virtual void doTask(InstrumentList &instrList);
 };
 
 #endif // SCANPATTERNMATCHES_H

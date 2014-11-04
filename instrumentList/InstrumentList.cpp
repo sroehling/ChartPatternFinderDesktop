@@ -130,7 +130,8 @@ const InstrumentSelectionInfoPtr InstrumentList::instrInfoWithScannedPatterns(un
 
     if(doScanPatterns)
     {
-        instrInfo->scanPatternMatches();
+        ScanPatternMatches scannerTask(instrInfo);
+        scannerTask.doTask(*this);
     }
     return instrInfo;
 }

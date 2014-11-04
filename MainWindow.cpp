@@ -232,3 +232,13 @@ void MainWindow::licenseRegistrationComplete()
     qDebug() << "Main Window: License Registration complete";
     configureUIForFullVersion();
 }
+
+void MainWindow::appExitCleanupHandler()
+{
+    qDebug() << "Main Window: appExitCleanupHandler()";
+    if(instrumentListTableView_)
+    {
+        instrumentListTableView_->appExitCleanupHandler();
+    }
+
+}

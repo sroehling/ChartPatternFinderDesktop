@@ -12,7 +12,7 @@ void InstrumentListWorker::run()
     InstrumentListTaskPtr instrListTask = instrList_->nextInstrListTask();
     while(instrListTask)
     {
-        instrListTask->doTask(instrList_);
+        instrListTask->doTask(*instrList_);
         instrListTask = instrList_->nextInstrListTask();
     }
 

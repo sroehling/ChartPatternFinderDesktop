@@ -54,6 +54,7 @@ public slots:
     void openRegisterDialog();
     void licenseRegistrationComplete();
     void openBuyUrl();
+    void appExitCleanupHandler();
 };
 
 #endif // MAINWINDOW_H

@@ -63,14 +63,21 @@ void InstrumentListTableView::instrumentAddedToList(unsigned int instrNum)
     }
 }
 
-void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
+void InstrumentListTableView::obsoleteCurrentInstrumentList()
 {
     if(instrumentList_)
     {
         // If there's an existing list, "obsolete" the list, so any scanning which
         // is already in progress will stop.
         instrumentList_->obsoleteList();
+        instrumentList_ = InstrumentListPtr(); // NULL Pointer
     }
+
+}
+
+void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
+{
+    obsoleteCurrentInstrumentList();
     instrumentList_ = InstrumentListPtr(new InstrumentList(quoteFilePath));
 
     initTable();
@@ -79,6 +86,11 @@ void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
     // of the instruments (symbols/tickers).
     QThreadPool::globalInstance()->start(new InstrumentListWorker(instrumentList_));
     QThreadPool::globalInstance()->start(new InstrumentListWorker(instrumentList_));
+}
+
+void InstrumentListTableView::appExitCleanupHandler()
+{
+    obsoleteCurrentInstrumentList();
 }
 
 void InstrumentListTableView::selectInstrument(int instrNum)

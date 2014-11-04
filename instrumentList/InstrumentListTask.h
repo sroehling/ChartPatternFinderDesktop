@@ -7,7 +7,7 @@ class InstrumentListTask
 {
 public:
     InstrumentListTask();
-    virtual void doTask(const InstrumentListPtr &instrList) = 0;
+    virtual void doTask(InstrumentList &instrList) = 0;
 
     virtual ~InstrumentListTask() {}
 };
