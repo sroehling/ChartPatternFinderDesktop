@@ -21,6 +21,42 @@ macx: QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=c++11 -stdlib=libc++
 macx: LIBS += -mmacosx-version-min=10.7 -stdlib=libc++
 CONFIG += c++11
 
+CONFIG(debug, debug|release) {
+unix: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_GCC_64bit-Debug
+macx: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_clang_64bit-Debug
+macx: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Debug
+win32: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_MinGW_32bit-Debug\debug
+win32: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Debug\debug
+} else {
+unix: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_GCC_64bit-Release
+macx: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_clang_64bit-Release
+macx: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Release
+win32: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_MinGW_32bit-Release\release
+win32: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Release\release
+DEFINES += QT_NO_DEBUG_OUTPUT
+}
+
+## PatternRecognitionLib is linked from the library built within the sub-module
+
+LIBS += -L$$PWD/lib/PatternRecognitionLib/$$PATTERNRECOGLIBDIR -lPatternRecognitionLib
+PRE_TARGETDEPS += $$PWD/lib/PatternRecognitionLib/$$PATTERNRECOGLIBDIR/libPatternRecognitionLib.a
+
+LIBS += -L$$PWD/lib/LicenseKey/$$LICENSEKEYLIBDIR -lLicenseKeyLib
+PRE_TARGETDEPS += $$PWD/lib/LicenseKey/$$LICENSEKEYLIBDIR/libLicenseKeyLib.a
+
+
+## Link with pre-built version of Boost.
+# IMPORTANT: To avoid link errors, the boost libraries must come *after* PatternRecognitionLib in the
+# build sequence. gcc is especialy sensitive to this.
+macx: DEFINES += BOOST_ALL_DYN_LINK
+macx: DEFINES += BOOST_LOG_DYN_LINK
+macx: INCLUDEPATH += /usr/local/boost156/include
+macx: LIBS += -L/usr/local/boost156/lib -lboost_date_time-mt -lboost_log-mt -lboost_log_setup-mt -lboost_unit_test_framework-mt
+macx: include ( /usr/local/qwt-6.1.0/features/qwt.prf )
+win32: INCLUDEPATH += c:/boost_1_56_0
+win32:LIBS += -L"C:/boost_1_56_0/stage/lib/" -lboost_date_time-mgw48-mt-1_56 -lboost_log-mgw48-mt-1_56 -lboost_log_setup-mgw48-mt-1_56
+win32: include ( c:/qwt-6.1.1/qwt.prf )
+
 SOURCES += \
     instrumentList/InstrumentSelectionInfo.cpp \
     instrumentList/InstrumentList.cpp \
@@ -77,7 +113,6 @@ HEADERS  += \
     volumePlot/VolumePlotCurve.h \
     volumePlot/VolumeYAxisScaleDraw.h
 
-
 INCLUDEPATH += $$PWD/lib/PatternRecognitionLib/src/chartSegment\
     $$PWD/volumePlot\
     $$PWD/instrumentList\
@@ -97,46 +132,7 @@ INCLUDEPATH += $$PWD/lib/PatternRecognitionLib/src/chartSegment\
     $$PWD/lib/PatternRecognitionLib/src/quoteData\
     $$PWD/lib/LicenseKey/LicenseKeyLib
 
-
 RESOURCES += icons.qrc
-
-
-CONFIG(debug, debug|release) {
-unix: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_GCC_64bit-Debug
-macx: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_clang_64bit-Debug
-macx: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Debug
-win32: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_MinGW_32bit-Debug\debug
-win32: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Debug\debug
-} else {
-unix: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_GCC_64bit-Release
-macx: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_clang_64bit-Release
-macx: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Release
-win32: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_MinGW_32bit-Release\release
-win32: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Release\release
-DEFINES += QT_NO_DEBUG_OUTPUT
-}
-
-## PatternRecognitionLib is linked from the library built within the sub-module
-
-LIBS += -L$$PWD/lib/PatternRecognitionLib/$$PATTERNRECOGLIBDIR -lPatternRecognitionLib
-PRE_TARGETDEPS += $$PWD/lib/PatternRecognitionLib/$$PATTERNRECOGLIBDIR/libPatternRecognitionLib.a
-
-LIBS += -L$$PWD/lib/LicenseKey/$$LICENSEKEYLIBDIR -lLicenseKeyLib
-PRE_TARGETDEPS += $$PWD/lib/LicenseKey/$$LICENSEKEYLIBDIR/libLicenseKeyLib.a
-
-
-## Link with pre-built version of Boost.
-# IMPORTANT: To avoid link errors, the boost libraries must come *after* PatternRecognitionLib in the
-# build sequence. gcc is especialy sensitive to this.
-macx: DEFINES += BOOST_ALL_DYN_LINK
-macx: DEFINES += BOOST_LOG_DYN_LINK
-macx: INCLUDEPATH += /usr/local/boost156/include
-macx: LIBS += -L/usr/local/boost156/lib -lboost_date_time-mt -lboost_log-mt -lboost_log_setup-mt -lboost_unit_test_framework-mt
-macx: include ( /usr/local/qwt-6.1.0/features/qwt.prf )
-win32: INCLUDEPATH += c:/boost_1_56_0
-win32:LIBS += -L"C:/boost_1_56_0/stage/lib/" -lboost_date_time-mgw48-mt-1_56 -lboost_log-mgw48-mt-1_56 -lboost_log_setup-mgw48-mt-1_56
-win32: include ( c:/qwt-6.1.1/qwt.prf )
-
 
 OTHER_FILES += \
     icons/chartpatternfinder.ico \
