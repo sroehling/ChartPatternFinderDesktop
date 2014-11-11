@@ -21,66 +21,82 @@ macx: QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=c++11 -stdlib=libc++
 macx: LIBS += -mmacosx-version-min=10.7 -stdlib=libc++
 CONFIG += c++11
 
-SOURCES += main.cpp\
-    plot.cpp \
-    griditem.cpp \
-    legend.cpp \
-    StockChartDateScaleDraw.cpp \
-    StockChartPlotZoomer.cpp \
-    StockChartPlotCurve.cpp \
-    QDateHelper.cpp \
-    MainWindow.cpp \
-    PatternPlotCurve.cpp \
-    PatternMatchTableView.cpp \
-    instrumentList/InstrumentListTableView.cpp \
-    PseudoTimeOHLCSample.cpp \
-    BreakoutPlotMarker.cpp \
+SOURCES += \
     instrumentList/InstrumentSelectionInfo.cpp \
-    BreakdownPlotMarker.cpp \
     instrumentList/InstrumentList.cpp \
-    StackedStockCharts.cpp \
-    VolumePlot.cpp \
-    VolumePlotCurve.cpp \
-    VolumeYAxisScaleDraw.cpp \
-    RegisterDialog.cpp \
-    LicenseRegistration.cpp \
-    SettingsHelper.cpp \
+    instrumentList/InstrumentListTableView.cpp \
     instrumentList/InstrumentListTask.cpp \
     instrumentList/ReadQuotesFromFile.cpp \
     instrumentList/InstrumentListWorker.cpp \
-    instrumentList/ScanPatternMatches.cpp
+    instrumentList/ScanPatternMatches.cpp \
+    license/RegisterDialog.cpp \
+    license/LicenseRegistration.cpp \
+    main/main.cpp\
+    main/MainWindow.cpp \
+    main/StackedStockCharts.cpp \
+    patternMatchList/PatternMatchTableView.cpp \
+    patternPlot/PseudoTimeOHLCSample.cpp \
+    patternPlot/StockChartDateScaleDraw.cpp \
+    patternPlot/StockChartPlotZoomer.cpp \
+    patternPlot/StockChartPlotCurve.cpp \
+    patternPlot/PatternPlotCurve.cpp \
+    patternPlot/BreakoutPlotMarker.cpp \
+    patternPlot/PriceAndPatternPlot.cpp \
+    patternPlot/BreakdownPlotMarker.cpp \
+    util/QDateHelper.cpp \
+    util/SettingsHelper.cpp \
+    volumePlot/VolumePlot.cpp \
+    volumePlot/VolumePlotCurve.cpp \
+    volumePlot/VolumeYAxisScaleDraw.cpp
 
 HEADERS  += \
-    griditem.h \
-    legend.h \
-    plot.h \
-    StockChartDateScaleDraw.h \
-    StockChartPlotZoomer.h \
-    StockChartPlotCurve.h \
-    QDateHelper.h \
-    MainWindow.h \
-    PatternPlotCurve.h \
-    PatternMatchTableView.h \
     instrumentList/InstrumentListTableView.h \
-    PseudoTimeOHLCSample.h \
-    BreakoutPlotMarker.h \
     instrumentList/InstrumentSelectionInfo.h \
-    BreakdownPlotMarker.h \
     instrumentList/InstrumentList.h \
-    StackedStockCharts.h \
-    VolumePlot.h \
-    VolumePlotCurve.h \
-    VolumeYAxisScaleDraw.h \
-    RegisterDialog.h \
-    LicenseRegistration.h \
-    SettingsHelper.h \
     instrumentList/InstrumentListTask.h \
     instrumentList/ReadQuotesFromFile.h \
     instrumentList/InstrumentListWorker.h \
     instrumentList/ScanPatternMatches.h \
-    instrumentList/InstrumentListTypes.h
+    instrumentList/InstrumentListTypes.h \
+    license/RegisterDialog.h \
+    license/LicenseRegistration.h \
+    main/MainWindow.h \
+    main/StackedStockCharts.h \
+    patternMatchList/PatternMatchTableView.h \
+    patternPlot/StockChartDateScaleDraw.h \
+    patternPlot/StockChartPlotZoomer.h \
+    patternPlot/StockChartPlotCurve.h \
+    patternPlot/PatternPlotCurve.h \
+    patternPlot/PriceAndPatternPlot.h \
+    patternPlot/PseudoTimeOHLCSample.h \
+    patternPlot/BreakoutPlotMarker.h \
+    patternPlot/BreakdownPlotMarker.h \
+    util/QDateHelper.h \
+    util/SettingsHelper.h \
+    volumePlot/VolumePlot.h \
+    volumePlot/VolumePlotCurve.h \
+    volumePlot/VolumeYAxisScaleDraw.h
 
-INCLUDEPATH += instrumentList
+
+INCLUDEPATH += $$PWD/lib/PatternRecognitionLib/src/chartSegment\
+    $$PWD/volumePlot\
+    $$PWD/instrumentList\
+    $$PWD/license\
+    $$PWD/main\
+    $$PWD/patternMatchList\
+    $$PWD/patternPlot\
+    $$PWD/util\
+    $$PWD/lib/PatternRecognitionLib/src/chartSegmentList\
+    $$PWD/lib/PatternRecognitionLib/src/date\
+    $$PWD/lib/PatternRecognitionLib/src/math\
+    $$PWD/lib/PatternRecognitionLib/src/patternMatch\
+    $$PWD/lib/PatternRecognitionLib/src/patternMatchFilter\
+    $$PWD/lib/PatternRecognitionLib/src/patternMatchValidator\
+    $$PWD/lib/PatternRecognitionLib/src/patternScan\
+    $$PWD/lib/PatternRecognitionLib/src/patternShape\
+    $$PWD/lib/PatternRecognitionLib/src/quoteData\
+    $$PWD/lib/LicenseKey/LicenseKeyLib
+
 
 RESOURCES += icons.qrc
 
@@ -121,17 +137,6 @@ win32: INCLUDEPATH += c:/boost_1_56_0
 win32:LIBS += -L"C:/boost_1_56_0/stage/lib/" -lboost_date_time-mgw48-mt-1_56 -lboost_log-mgw48-mt-1_56 -lboost_log_setup-mgw48-mt-1_56
 win32: include ( c:/qwt-6.1.1/qwt.prf )
 
-INCLUDEPATH += $$PWD/lib/PatternRecognitionLib/src/chartSegment\
-    $$PWD/lib/PatternRecognitionLib/src/chartSegmentList\
-    $$PWD/lib/PatternRecognitionLib/src/date\
-    $$PWD/lib/PatternRecognitionLib/src/math\
-    $$PWD/lib/PatternRecognitionLib/src/patternMatch\
-    $$PWD/lib/PatternRecognitionLib/src/patternMatchFilter\
-    $$PWD/lib/PatternRecognitionLib/src/patternMatchValidator\
-    $$PWD/lib/PatternRecognitionLib/src/patternScan\
-    $$PWD/lib/PatternRecognitionLib/src/patternShape\
-    $$PWD/lib/PatternRecognitionLib/src/quoteData\
-    $$PWD/lib/LicenseKey/LicenseKeyLib
 
 OTHER_FILES += \
     icons/chartpatternfinder.ico \

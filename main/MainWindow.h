@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include "plot.h"
+#include "PriceAndPatternPlot.h"
 #include <QItemSelectionModel>
 #include <QTableView>
 #include <QPushButton>
@@ -28,7 +28,7 @@ private:
     QSettingsPtr appSettings_;
     LicenseRegistrationPtr LicenseRegistration_;
 
-    Plot *priceAndPatternPlot_;
+    PriceAndPatternPlot *priceAndPatternPlot_;
     StackedStockCharts *stackedStockCharts_;
 
     PatternMatchTableView* patternTable_;

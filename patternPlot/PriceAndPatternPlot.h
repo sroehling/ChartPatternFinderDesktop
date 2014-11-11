@@ -7,7 +7,7 @@
 #include "StockChartPlotZoomer.h"
 #include "InstrumentSelectionInfo.h"
 
-class Plot: public QwtPlot
+class PriceAndPatternPlot: public QwtPlot
 {
     Q_OBJECT
 
@@ -16,7 +16,7 @@ private:
 
 
 public:
-    Plot( QWidget * = NULL );
+    PriceAndPatternPlot( QWidget * = NULL );
     void populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo);
 
     void clearPatternPlots();

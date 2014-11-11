@@ -16,9 +16,7 @@
 #include <qwt_plot_legenditem.h>
 #include <assert.h>
 
-#include "plot.h"
-#include "legend.h"
-#include "griditem.h"
+#include "PriceAndPatternPlot.h"
 
 #include "StockChartDateScaleDraw.h"
 #include "StockChartPlotZoomer.h"
@@ -37,7 +35,7 @@
 #include <sstream>
 #include <qwt_scale_engine.h>
 
-Plot::Plot( QWidget *parent ):
+PriceAndPatternPlot::PriceAndPatternPlot( QWidget *parent ):
     QwtPlot( parent )
 {
     setTitle( "" );
@@ -88,7 +86,7 @@ Plot::Plot( QWidget *parent ):
 }
 
 
-void Plot::clearPatternPlots()
+void PriceAndPatternPlot::clearPatternPlots()
 {
     // Detach and delete any existing plot curves
     this->detachItems(QwtPlotItem::Rtti_PlotCurve,true);
@@ -96,7 +94,7 @@ void Plot::clearPatternPlots()
 
 }
 
-void Plot::populateOnePatternShape(const PatternMatchPtr &patternMatch)
+void PriceAndPatternPlot::populateOnePatternShape(const PatternMatchPtr &patternMatch)
 {
     PatternShapeGenerator shapeGen;
     PatternShapePtr patternShape = shapeGen.generateShape(*patternMatch);
@@ -139,7 +137,7 @@ void Plot::populateOnePatternShape(const PatternMatchPtr &patternMatch)
 
 }
 
-void Plot::populatePatternMatchesShapes(const PatternMatchListPtr &patternMatches)
+void PriceAndPatternPlot::populatePatternMatchesShapes(const PatternMatchListPtr &patternMatches)
 {
     clearPatternPlots();
 
@@ -152,7 +150,7 @@ void Plot::populatePatternMatchesShapes(const PatternMatchListPtr &patternMatche
 
 
 
-void Plot::populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo)
+void PriceAndPatternPlot::populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo)
 {
 
     clearPatternPlots();
@@ -183,7 +181,7 @@ void Plot::populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo)
 
 }
 
-void Plot::setMode( int style )
+void PriceAndPatternPlot::setMode( int style )
 {
     QwtPlotTradingCurve::SymbolStyle symbolStyle =
         static_cast<QwtPlotTradingCurve::SymbolStyle>( style );
@@ -199,13 +197,13 @@ void Plot::setMode( int style )
     replot();
 }
 
-void Plot::showItem( QwtPlotItem *item, bool on )
+void PriceAndPatternPlot::showItem( QwtPlotItem *item, bool on )
 {
     item->setVisible( on );
     replot();
 }
 
-void Plot::exportPlot()
+void PriceAndPatternPlot::exportPlot()
 {
     QwtPlotRenderer renderer;
     renderer.exportTo( this, "stockchart.pdf" );

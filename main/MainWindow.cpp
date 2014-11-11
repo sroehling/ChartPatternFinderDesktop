@@ -2,7 +2,7 @@
 #include <qcombobox.h>
 #include <qtoolbar.h>
 #include <qtoolbutton.h>
-#include "plot.h"
+#include "PriceAndPatternPlot.h"
 #include "RegisterDialog.h"
 
 #include <QTableView>

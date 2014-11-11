@@ -5,7 +5,7 @@
 #include <qwt_plot.h>
 #include <qwt_scale_widget.h>
 #include <qwt_scale_draw.h>
-#include "plot.h"
+#include "PriceAndPatternPlot.h"
 #include <QDebug>
 #include "DoubleRange.h"
 
@@ -17,7 +17,7 @@ StackedStockCharts::StackedStockCharts(QWidget *parent ):
     layout->setSpacing(0);
     layout->setMargin(4);
 
-    priceAndPatternPlot_ = new Plot(this);
+    priceAndPatternPlot_ = new PriceAndPatternPlot(this);
     layout->addWidget( priceAndPatternPlot_,0,0 );
 
     volumePlot_ = new VolumePlot(this);

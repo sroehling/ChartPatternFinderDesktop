@@ -4,7 +4,7 @@
 #include <QFrame>
 #include <qframe.h>
 #include <qwt_plot.h>
-#include "plot.h"
+#include "PriceAndPatternPlot.h"
 #include "VolumePlot.h"
 #include <QGridLayout>
 #include "InstrumentSelectionInfo.h"
@@ -15,7 +15,7 @@ class StackedStockCharts : public QFrame
 
 
 private:
-    Plot *priceAndPatternPlot_;
+    PriceAndPatternPlot *priceAndPatternPlot_;
     VolumePlot *volumePlot_;
 
 
@@ -24,7 +24,7 @@ public:
     virtual ~StackedStockCharts() {}
 
     void populateChartData(const InstrumentSelectionInfoPtr &instrSelInfo);
-    Plot *priceAndPatternPlot() const { return priceAndPatternPlot_; }
+    PriceAndPatternPlot *priceAndPatternPlot() const { return priceAndPatternPlot_; }
 
 private Q_SLOTS:
     void scaleDivChanged();
