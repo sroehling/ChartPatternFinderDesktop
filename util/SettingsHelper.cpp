@@ -8,8 +8,8 @@ namespace settingsHelper {
 QSettingsPtr openUserSettings()
 {
     return QSettingsPtr(new QSettings(QSettings::NativeFormat,
-                           QSettings::UserScope,QString(SETTING_APP_NAME),
-                           QString(SETTING_ORGANIZATION_NAME)));
+                           QSettings::UserScope,
+                           QString(SETTING_ORGANIZATION_NAME),QString(SETTING_APP_NAME)));
 }
 
 } // namespace

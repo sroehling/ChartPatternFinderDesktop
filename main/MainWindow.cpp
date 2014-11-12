@@ -4,6 +4,7 @@
 #include <qtoolbutton.h>
 #include "PriceAndPatternPlot.h"
 #include "RegisterDialog.h"
+#include "WelcomeDialog.h"
 
 #include <QTableView>
 #include <QTableWidget>
@@ -116,13 +117,24 @@ MainWindow::MainWindow(QWidget *parent) :
 
     setCentralWidget(mainSplitter);
 
+    welcomeDialog_ = new WelcomeDialog(this);
+    connect(welcomeDialog_,SIGNAL(welcomeDialogSelectQuotesButtonPressed()),
+            this, SLOT(welcomeDialogSelectQuotesConfirmed()));
+    connect(welcomeDialog_,SIGNAL(welcomeDialogQuitButtonPressed()),
+            this, SLOT(welcomeDialogQuitAppConfirmed()));
+
     if(!appSettings_->contains(APP_SETTINGS_KEY_QUOTES_DIR))
     {
-        bool requireDirChoice = true;
-        chooseQuotesDir(requireDirChoice);
-    }
+        // If this is the first time starting up the application, show the welcome dialog. This
+        // Welcome dialog will in turn prompt the user to select a quotes folder, or allow the
+        // user to quit and come back to do so.
+        //
+        // The welcome dialog has a connection back to the main window (see above) when either the
+        // "Select Quotes" button or "Quit" button is pressed. This will bring up the prompt for
+        // the quotes directory or quit the application accordingly.
+        welcomeDialog_->show();
+     }
     QString quoteFileDirName = appSettings_->value(APP_SETTINGS_KEY_QUOTES_DIR).toString();
-
 
     if(LicenseRegistration_->fullVersionLicenseRegistered())
     {
@@ -231,6 +243,25 @@ void MainWindow::licenseRegistrationComplete()
 {
     qDebug() << "Main Window: License Registration complete";
     configureUIForFullVersion();
+}
+
+void MainWindow::welcomeDialogSelectQuotesConfirmed()
+{
+    qDebug() << "Main Window: welcomeDialogSelectQuotesConfirmed()";
+    assert(welcomeDialog_ != NULL);
+    welcomeDialog_->close();
+
+    bool requireDirChoice = true;
+    chooseQuotesDir(requireDirChoice);
+
+
+}
+
+void MainWindow::welcomeDialogQuitAppConfirmed()
+{
+    welcomeDialog_->close();
+    qDebug() << "Main Window: welcomeDialogQuitAppConfirmed()";
+    emit quitApplication();
 }
 
 void MainWindow::appExitCleanupHandler()

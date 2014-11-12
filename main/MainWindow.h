@@ -13,6 +13,7 @@
 #include "StackedStockCharts.h"
 #include "SettingsHelper.h"
 #include "LicenseRegistration.h"
+#include "WelcomeDialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -37,6 +38,8 @@ private:
     QPushButton *registerButton_;
     QPushButton *buyButton_;
 
+    WelcomeDialog *welcomeDialog_;
+
     void configureUIForFullVersion();
 
 private slots:
@@ -47,6 +50,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+     void quitApplication();
 public slots:
     void instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo);
     void patternMatchesSelected(const PatternMatchListPtr &selectedMatch);
@@ -55,6 +60,8 @@ public slots:
     void licenseRegistrationComplete();
     void openBuyUrl();
     void appExitCleanupHandler();
+    void welcomeDialogSelectQuotesConfirmed();
+    void welcomeDialogQuitAppConfirmed();
 };
 
 #endif // MAINWINDOW_H

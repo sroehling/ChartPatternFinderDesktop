@@ -83,7 +83,8 @@ SOURCES += \
     util/SettingsHelper.cpp \
     volumePlot/VolumePlot.cpp \
     volumePlot/VolumePlotCurve.cpp \
-    volumePlot/VolumeYAxisScaleDraw.cpp
+    volumePlot/VolumeYAxisScaleDraw.cpp \
+    main/WelcomeDialog.cpp
 
 HEADERS  += \
     instrumentList/InstrumentListTableView.h \
@@ -111,7 +112,8 @@ HEADERS  += \
     util/SettingsHelper.h \
     volumePlot/VolumePlot.h \
     volumePlot/VolumePlotCurve.h \
-    volumePlot/VolumeYAxisScaleDraw.h
+    volumePlot/VolumeYAxisScaleDraw.h \
+    main/WelcomeDialog.h
 
 INCLUDEPATH += $$PWD/lib/PatternRecognitionLib/src/chartSegment\
     $$PWD/volumePlot\
