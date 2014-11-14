@@ -37,7 +37,7 @@ void PatternMatchTableView::populatePatternMatches(const PatternMatchListPtr &pa
 
     currentPatternMatches_ = sortedMatches;
 
-    unsigned int numRows = patternMatches->size();
+    unsigned int numRows = currentPatternMatches_->size();
     unsigned int numCols = 5;
     QStandardItemModel *tableModel = new QStandardItemModel(numRows, numCols,this);
 
@@ -49,8 +49,8 @@ void PatternMatchTableView::populatePatternMatches(const PatternMatchListPtr &pa
 
 
     unsigned int rowNum = 0;
-    for(PatternMatchList::const_iterator matchIter = sortedMatches->begin();
-        matchIter != sortedMatches->end(); matchIter++)
+    for(PatternMatchList::const_iterator matchIter = currentPatternMatches_->begin();
+        matchIter != currentPatternMatches_->end(); matchIter++)
     {
         unsigned int colNum = 0;
 
@@ -105,7 +105,7 @@ void PatternMatchTableView::populatePatternMatches(const PatternMatchListPtr &pa
     }
 
 
-    if(patternMatches->size() > 0)
+    if(currentPatternMatches_->size() > 0)
     {
         selectRow(0);
     }
