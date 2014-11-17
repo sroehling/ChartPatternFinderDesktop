@@ -28,6 +28,7 @@
 #include <QPushButton>
 #include <QStyle>
 #include <QLabel>
+#include <QProgressBar>
 #include "SettingsHelper.h"
 
 #define APP_SETTINGS_KEY_QUOTES_DIR "QUOTES_DIR"
@@ -64,6 +65,16 @@ MainWindow::MainWindow(QWidget *parent) :
     lhsLayout->addWidget(refreshQuotesButton);
     connect(refreshQuotesButton,SIGNAL(clicked()),this,SLOT(actionRefreshQuotes()));
 
+
+    // Label and progress indicator for pattern scanning.
+    scanLabel_ = new QLabel("Scanning for Patterns:");
+    scanningProgress_ = new QProgressBar(this);
+    scanningProgress_->setMaximum(100);
+    scanningProgress_->setValue(0);
+    connect(instrumentListTableView_,SIGNAL(startingPatternScan(unsigned int)),this,SLOT(startingPatternScan(unsigned int)));
+    connect(instrumentListTableView_,SIGNAL(instrumentScanProgressUpdated(unsigned int)),this,SLOT(instrumentScanProgressUpdated(unsigned int)));
+    connect(instrumentListTableView_,SIGNAL(instrumentScanComplete()),this,SLOT(instrumentScanComplete()));
+
     QWidget *lhsContent = new QWidget();
     lhsContent->setLayout(lhsLayout);
 
@@ -91,7 +102,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // Main Layout
     QHBoxLayout *infoLayout = new QHBoxLayout();
-    infoLayout->addWidget(websiteLinkLabel,100,Qt::AlignLeft);
+    infoLayout->addWidget(scanLabel_,Qt::AlignLeft);
+    infoLayout->addSpacerItem(new QSpacerItem(5,5));
+    infoLayout->addWidget(scanningProgress_,Qt::AlignLeft);
+    infoLayout->addSpacerItem(new QSpacerItem(10,10));
+    infoLayout->addWidget(websiteLinkLabel,100,Qt::AlignRight);
+    infoLayout->addSpacerItem(new QSpacerItem(10,10));
     infoLayout->addWidget(buyButton_,0,Qt::AlignRight);
     infoLayout->addSpacerItem(new QSpacerItem(10,10));
     infoLayout->addWidget(registerButton_,0,Qt::AlignRight);
@@ -255,6 +271,28 @@ void MainWindow::welcomeDialogSelectQuotesConfirmed()
     chooseQuotesDir(requireDirChoice);
 
 
+}
+
+
+void MainWindow::startingPatternScan(unsigned int numInstrumentsToBeScanned)
+{
+    qDebug() << "Main Window: starting pattern scan";
+    scanningProgress_->setMaximum(numInstrumentsToBeScanned);
+    scanningProgress_->setValue(0);
+    scanningProgress_->show();
+    scanLabel_->show();
+
+}
+
+void MainWindow::instrumentScanProgressUpdated(unsigned int numInstrumentsScanned)
+{
+    scanningProgress_->setValue(numInstrumentsScanned);
+}
+
+void MainWindow::instrumentScanComplete()
+{
+    scanningProgress_->hide();
+    scanLabel_->hide();
 }
 
 void MainWindow::welcomeDialogQuitAppConfirmed()

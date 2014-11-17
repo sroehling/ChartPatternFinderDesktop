@@ -93,4 +93,6 @@ void ScanPatternMatches::doTask(InstrumentList &instrList)
      if(instrList.listIsObsolete()) return; // Abort if list is obsolete
 
     instrNeedingScan_->setPatternMatches(currentPatternMatches);
+
+    instrList.oneInstrScanComplete();
 }

@@ -6,6 +6,8 @@
 #include <QItemSelectionModel>
 #include <QTableView>
 #include <QPushButton>
+#include <QLabel>
+#include <QProgressBar>
 #include "PatternMatch.h"
 #include "PatternMatchTableView.h"
 #include "InstrumentListTableView.h"
@@ -35,6 +37,9 @@ private:
     PatternMatchTableView* patternTable_;
     InstrumentListTableView *instrumentListTableView_;
 
+    QProgressBar *scanningProgress_;
+    QLabel *scanLabel_;
+
     QPushButton *registerButton_;
     QPushButton *buyButton_;
 
@@ -62,6 +67,10 @@ public slots:
     void appExitCleanupHandler();
     void welcomeDialogSelectQuotesConfirmed();
     void welcomeDialogQuitAppConfirmed();
+    void startingPatternScan(unsigned int numInstrumentsToBeScanned);
+    void instrumentScanProgressUpdated(unsigned int numInstrumentsScanned);
+    void instrumentScanComplete();
+
 };
 
 #endif // MAINWINDOW_H

@@ -23,6 +23,9 @@ InstrumentList::InstrumentList(const QString &quoteFilePath)
     qDebug() << "Scanning: " << dir.path();
     QStringList fileList = dir.entryList();
 
+    numCSVFiles_ = fileList.count();
+    numInstrsScanned_ = 0;
+
     for (int rowNum=0; rowNum<fileList.count(); rowNum++)
     {
         qDebug() << "Found file (full path): " << dir.absoluteFilePath(fileList[rowNum]);
@@ -57,6 +60,13 @@ const InstrumentSelectionInfoPtr &InstrumentList::instrInfo(unsigned int instrNu
 {
     assert(instrNum < instrumentInfo_.size());
     return instrumentInfo_[instrNum];
+}
+
+void InstrumentList::oneInstrScanComplete()
+{
+    QMutexLocker lock(&instrumentInfoMutex_);
+    numInstrsScanned_++;
+    emit instrumentScanProgressUpdated(numInstrsScanned_);
 }
 
 
@@ -98,6 +108,7 @@ InstrumentListTaskPtr InstrumentList::nextInstrListTask()
                 return scanTask;
             }
         }
+        emit instrScanComplete();
         return InstrumentListTaskPtr(); // Nothing more to scan -- return NULL (smart) pointer
     }
 }

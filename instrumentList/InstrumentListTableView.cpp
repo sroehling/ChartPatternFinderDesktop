@@ -44,6 +44,10 @@ void InstrumentListTableView::initTable()
               this, SLOT(instrumentSelectionChanged(const QItemSelection &,const QItemSelection &)));
     connect(instrumentList_.get(),SIGNAL(instrumentAdded(unsigned int)),
             this,SLOT(instrumentAddedToList(unsigned int)));
+    connect(instrumentList_.get(),SIGNAL(instrumentScanProgressUpdated(unsigned int)),
+            this,SLOT(instrListScanProgressUpdated(unsigned int)));
+    connect(instrumentList_.get(),SIGNAL(instrScanComplete()),
+            this,SLOT(instrListScanComplete()));
 
 }
 
@@ -61,6 +65,17 @@ void InstrumentListTableView::instrumentAddedToList(unsigned int instrNum)
         // is established, since this will cause instrumentSelectionChanged() to be called.
         selectRow(0);
     }
+}
+
+void InstrumentListTableView::instrListScanProgressUpdated(unsigned int numInstrsScanned)
+{
+    emit instrumentScanProgressUpdated(numInstrsScanned);
+}
+
+void InstrumentListTableView::instrListScanComplete()
+{
+    qDebug() << "InstrumentListTableView::instrListScanComplete()";
+    emit instrumentScanComplete();
 }
 
 void InstrumentListTableView::obsoleteCurrentInstrumentList()
@@ -81,6 +96,8 @@ void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
     instrumentList_ = InstrumentListPtr(new InstrumentList(quoteFilePath));
 
     initTable();
+
+    emit startingPatternScan(instrumentList_->numCSVFiles());
 
     // Add a couple worker threads to read (and validate) the quote data then scan patterns for each
     // of the instruments (symbols/tickers).

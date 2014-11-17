@@ -21,6 +21,10 @@ private:
     // list, this allows the scanning threads to gracefully exit.
     bool listIsObsolete_;
 
+    // Number of CSV files scanned for quotes
+    unsigned int numCSVFiles_;
+    unsigned int numInstrsScanned_;
+
     InstrumentListTaskList taskList_;
 
 public:
@@ -35,6 +39,8 @@ public:
 
     void addInstrumentSelectionInfo(const InstrumentSelectionInfoPtr &instrSelInfo);
 
+    void oneInstrScanComplete();
+
     const InstrumentSelectionInfoPtr instrInfoWithScannedPatterns(unsigned int instrNum);
 
     // Return the next instrument list task (reading or scanning), or NULL if there are no more.
@@ -43,9 +49,12 @@ public:
     void obsoleteList();
     bool listIsObsolete() const { return listIsObsolete_; }
 
+    unsigned int numCSVFiles() const { return numCSVFiles_; }
+
 signals:
     void instrumentAdded(unsigned int instrNum);
-
+    void instrumentScanProgressUpdated(unsigned int numInstrsScanned);
+    void instrScanComplete();
 
 };
 
