@@ -34,6 +34,7 @@ macx: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bi
 win32: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_MinGW_32bit-Release\release
 win32: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Release\release
 DEFINES += QT_NO_DEBUG_OUTPUT
+DEFINES += NDEBUG
 }
 
 ## PatternRecognitionLib is linked from the library built within the sub-module
