@@ -6,7 +6,7 @@
 #include "InstrumentSelectionInfo.h"
 #include <assert.h>
 #include "InstrumentListWorker.h"
-
+#include <QDebug>
 #include <QThreadPool>
 
 InstrumentListTableView::InstrumentListTableView() :
@@ -101,8 +101,21 @@ void InstrumentListTableView::populateFromCSVFiles(QString quoteFilePath)
 
     // Add a couple worker threads to read (and validate) the quote data then scan patterns for each
     // of the instruments (symbols/tickers).
-    QThreadPool::globalInstance()->start(new InstrumentListWorker(instrumentList_));
-    QThreadPool::globalInstance()->start(new InstrumentListWorker(instrumentList_));
+    int idealThreads = QThread::idealThreadCount();
+    if(idealThreads > 0)
+    {
+        // Leave 1 "ideal thread" for the main thread.
+        int scannerThreads = std::max(1,idealThreads-1);
+        qDebug() << "Thread count for scanning: " << scannerThreads;
+        for(int i = 0; i < scannerThreads; i++)
+        {
+            QThreadPool::globalInstance()->start(new InstrumentListWorker(instrumentList_));
+        }
+    }
+    else
+    {
+        QThreadPool::globalInstance()->start(new InstrumentListWorker(instrumentList_));
+    }
 }
 
 void InstrumentListTableView::appExitCleanupHandler()
