@@ -52,10 +52,10 @@ PRE_TARGETDEPS += $$PWD/lib/LicenseKey/$$LICENSEKEYLIBDIR/libLicenseKeyLib.a
 macx: DEFINES += BOOST_ALL_DYN_LINK
 macx: DEFINES += BOOST_LOG_DYN_LINK
 macx: INCLUDEPATH += /usr/local/boost156/include
-macx: LIBS += -L/usr/local/boost156/lib -lboost_date_time-mt -lboost_log-mt -lboost_log_setup-mt -lboost_unit_test_framework-mt
+macx: LIBS += -L/usr/local/boost156/lib -lboost_date_time-mt
 macx: include ( /usr/local/qwt-6.1.0/features/qwt.prf )
 win32: INCLUDEPATH += c:/boost_1_56_0
-win32:LIBS += -L"C:/boost_1_56_0/stage/lib/" -lboost_date_time-mgw48-mt-1_56 -lboost_log-mgw48-mt-1_56 -lboost_log_setup-mgw48-mt-1_56
+win32:LIBS += -L"C:/boost_1_56_0/stage/lib/" -lboost_date_time-mgw48-mt-1_56
 win32: include ( c:/qwt-6.1.1/qwt.prf )
 
 SOURCES += \
