@@ -95,7 +95,6 @@ File "${QTLIBDIR}\icudt52.dll"
 
 
 File "${BOOSTLIBDIR}\libboost_date_time-mgw48-mt-1_56.dll"
-File "${BOOSTLIBDIR}\libboost_log-mgw48-mt-1_56.dll"
 File "${BOOSTLIBDIR}\libboost_filesystem-mgw48-mt-1_56.dll"
 File "${BOOSTLIBDIR}\libboost_system-mgw48-mt-1_56.dll"
 File "${BOOSTLIBDIR}\libboost_thread-mgw48-mt-1_56.dll"
