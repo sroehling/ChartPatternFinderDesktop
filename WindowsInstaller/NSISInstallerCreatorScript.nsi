@@ -21,6 +21,7 @@
 
 
 !define QTLIBDIR "C:\Qt\5.3\mingw482_32\bin"
+!define QTPLATFORMLIBDIR "C:\Qt\5.3\mingw482_32\plugins\platforms"
 !define BOOSTLIBDIR "C:\boost_1_56_0\stage\lib"
 
 
@@ -51,8 +52,8 @@
 
 Name "${PRODUCT_NAME}"
 
-; Force installer to do a CRC check on itself before installing.
-CRCCheck force
+; Disable CRC Checking. The installer will be code-signed.
+CRCCheck off
 
 ; Configure for Modern UI System
 
@@ -99,6 +100,12 @@ File "${BOOSTLIBDIR}\libboost_filesystem-mgw48-mt-1_56.dll"
 File "${BOOSTLIBDIR}\libboost_system-mgw48-mt-1_56.dll"
 File "${BOOSTLIBDIR}\libboost_thread-mgw48-mt-1_56.dll"
 File "C:\qwt-6.1.1\lib\qwt.dll"
+
+; Copy the Windows platform plugin into a sub-directory of the installation directory
+CreateDirectory $INSTDIR\platforms
+SetOutPath $INSTDIR\platforms
+File "${QTPLATFORMLIBDIR}\qwindows.dll"
+
 
 WriteRegStr HKEY_LOCAL_MACHINE "${UNINSTALL_REG_KEY_DISPLAY_NAME}" "DisplayName" "${PRODUCT_NAME} (remove only)"
 WriteRegStr HKEY_LOCAL_MACHINE "${UNINSTALL_REG_KEY_UNINSTALL_STRING}" "UninstallString" "$INSTDIR\${UNINSTALLER_EXE_NAME}"
