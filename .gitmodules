@@ -1,0 +1,3 @@
+[submodule "lib/ChartPatternRecognitionLib"]
+	path = lib/ChartPatternRecognitionLib
+	url = https://sroehling@github.com/sroehling/ChartPatternRecognitionLib.git
