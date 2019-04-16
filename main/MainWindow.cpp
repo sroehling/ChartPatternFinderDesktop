@@ -3,7 +3,6 @@
 #include <qtoolbar.h>
 #include <qtoolbutton.h>
 #include "PriceAndPatternPlot.h"
-#include "RegisterDialog.h"
 #include "WelcomeDialog.h"
 
 #include <QTableView>
@@ -42,11 +41,12 @@ MainWindow::MainWindow(QWidget *parent) :
     appSettings_ = settingsHelper::openUserSettings();
     qDebug() << "Application settings file: " << appSettings_->fileName();
 
-    LicenseRegistration_ = LicenseRegistrationPtr(new LicenseRegistration());
-    connect(LicenseRegistration_.get(), SIGNAL(licenseRegistrationComplete()),
-              this, SLOT(licenseRegistrationComplete()));
 
-    patternTable_ = new PatternMatchTableView(LicenseRegistration_);
+    // TBD - Figure out what to do with license registration
+ //   connect(LicenseRegistration_.get(), SIGNAL(licenseRegistrationComplete()),
+   //           this, SLOT(licenseRegistrationComplete()));
+
+    patternTable_ = new PatternMatchTableView();
     instrumentListTableView_ = new InstrumentListTableView();
 
     stackedStockCharts_ = new StackedStockCharts(this);
@@ -98,7 +98,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     registerButton_ = new QPushButton("Register ...");
     registerButton_->setIcon(QPixmap(":/icons/register-button"));
-    connect(registerButton_,SIGNAL(clicked()),this,SLOT(openRegisterDialog()));
+  //  connect(registerButton_,SIGNAL(clicked()),this,SLOT(openRegisterDialog()));
 
     // Main Layout
     QHBoxLayout *infoLayout = new QHBoxLayout();
@@ -152,10 +152,8 @@ MainWindow::MainWindow(QWidget *parent) :
      }
     QString quoteFileDirName = appSettings_->value(APP_SETTINGS_KEY_QUOTES_DIR).toString();
 
-    if(LicenseRegistration_->fullVersionLicenseRegistered())
-    {
-        configureUIForFullVersion();
-    }
+
+    configureUIForFullVersion();
 
     // Layout is finished. Populate the pattern plot and pattern selectin table with some data.
 
@@ -249,11 +247,6 @@ void MainWindow::configureUIForFullVersion()
     buyButton_->hide();
 }
 
-void MainWindow::openRegisterDialog()
-{
-    RegisterDialog *regDialog = new RegisterDialog(LicenseRegistration_);
-    regDialog->show();
-}
 
 void MainWindow::licenseRegistrationComplete()
 {

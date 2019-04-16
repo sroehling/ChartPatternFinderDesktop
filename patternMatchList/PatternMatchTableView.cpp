@@ -6,12 +6,11 @@
 #include <QDebug>
 #include <QHeaderView>
 #include "PatternMatchFilter.h"
-#include "LicenseRegistration.h"
+
 
 using namespace patternMatchFilter;
 
-PatternMatchTableView::PatternMatchTableView(const LicenseRegistrationPtr &licenseRegistration)
-    : licenseRegistration_(licenseRegistration)
+PatternMatchTableView::PatternMatchTableView()
 {
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -24,16 +23,6 @@ PatternMatchTableView::PatternMatchTableView(const LicenseRegistrationPtr &licen
 void PatternMatchTableView::populatePatternMatches(const PatternMatchListPtr &patternMatches)
 {
     PatternMatchListPtr sortedMatches = sortPatternMatches(patternMatches,ReverseSortPatternMatchByEndTimeThenLength());
-
-    // If the app is registered in trial mode, then only show historical patterns; i.e., don't show the
-    // most recent or still forming pattern.
-    if(!licenseRegistration_->fullVersionLicenseRegistered())
-    {
-        if(sortedMatches->size() > 0)
-        {
-            sortedMatches->pop_front();
-        }
-    }
 
     currentPatternMatches_ = sortedMatches;
 

@@ -14,7 +14,6 @@
 #include "QSettings"
 #include "StackedStockCharts.h"
 #include "SettingsHelper.h"
-#include "LicenseRegistration.h"
 #include "WelcomeDialog.h"
 
 namespace Ui {
@@ -29,7 +28,6 @@ private:
     QString chooseQuotesDir(bool requireChoice);
 
     QSettingsPtr appSettings_;
-    LicenseRegistrationPtr LicenseRegistration_;
 
     PriceAndPatternPlot *priceAndPatternPlot_;
     StackedStockCharts *stackedStockCharts_;
@@ -61,7 +59,6 @@ public slots:
     void instrumentSelected(const InstrumentSelectionInfoPtr &instrSelectionInfo);
     void patternMatchesSelected(const PatternMatchListPtr &selectedMatch);
     void openHelpUrl();
-    void openRegisterDialog();
     void licenseRegistrationComplete();
     void openBuyUrl();
     void appExitCleanupHandler();

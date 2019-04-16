@@ -17,21 +17,15 @@ win32:RC_FILE = ChartPatternFinder.rc
 # This is needed to ensure consistency for all components, including
 # the boost library.
 
-macx: QMAKE_CXXFLAGS += -mmacosx-version-min=10.7 -std=c++11 -stdlib=libc++
-macx: LIBS += -mmacosx-version-min=10.7 -stdlib=libc++
+macx: QMAKE_CXXFLAGS += -mmacosx-version-min=10.12 -std=c++11 -stdlib=libc++
+macx: LIBS += -mmacosx-version-min=10.12 -stdlib=libc++
 CONFIG += c++11
 
 CONFIG(debug, debug|release) {
-unix: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_GCC_64bit-Debug
-macx: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_clang_64bit-Debug
-macx: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Debug
-win32: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_MinGW_32bit-Debug\debug
+macx: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_12_2_clang_64bit-Debug
 win32: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Debug\debug
 } else {
-unix: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_GCC_64bit-Release
-macx: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_clang_64bit-Release
-macx: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_clang_64bit-Release
-win32: LICENSEKEYLIBDIR = build-LicenseKeyLib-Desktop_Qt_5_3_MinGW_32bit-Release\release
+macx: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_12_2_clang_64bit-Release
 win32: PATTERNRECOGLIBDIR = build-PatternRecognitionLib-Desktop_Qt_5_3_MinGW_32bit-Release\release
 DEFINES += QT_NO_DEBUG_OUTPUT
 DEFINES += NDEBUG
@@ -39,21 +33,17 @@ DEFINES += NDEBUG
 
 ## PatternRecognitionLib is linked from the library built within the sub-module
 
-LIBS += -L$$PWD/lib/PatternRecognitionLib/$$PATTERNRECOGLIBDIR -lPatternRecognitionLib
-PRE_TARGETDEPS += $$PWD/lib/PatternRecognitionLib/$$PATTERNRECOGLIBDIR/libPatternRecognitionLib.a
-
-LIBS += -L$$PWD/lib/LicenseKey/$$LICENSEKEYLIBDIR -lLicenseKeyLib
-PRE_TARGETDEPS += $$PWD/lib/LicenseKey/$$LICENSEKEYLIBDIR/libLicenseKeyLib.a
-
+LIBS += -L$$PWD/lib/ChartPatternRecognitionLib/$$PATTERNRECOGLIBDIR -lPatternRecognitionLib
+PRE_TARGETDEPS += $$PWD/lib/ChartPatternRecognitionLib/$$PATTERNRECOGLIBDIR/libPatternRecognitionLib.a
 
 ## Link with pre-built version of Boost.
 # IMPORTANT: To avoid link errors, the boost libraries must come *after* PatternRecognitionLib in the
 # build sequence. gcc is especialy sensitive to this.
 macx: DEFINES += BOOST_ALL_DYN_LINK
 macx: DEFINES += BOOST_LOG_DYN_LINK
-macx: INCLUDEPATH += /usr/local/boost156/include
-macx: LIBS += -L/usr/local/boost156/lib -lboost_date_time-mt
-macx: include ( /usr/local/qwt-6.1.0/features/qwt.prf )
+macx: INCLUDEPATH += /usr/local/include
+macx: LIBS += -L/usr/local/lib -lboost_date_time-mt
+macx: include ( /usr/local/opt/qwt/features/qwt.prf )
 win32: INCLUDEPATH += c:/boost_1_56_0
 win32:LIBS += -L"C:/boost_1_56_0/stage/lib/" -lboost_date_time-mgw48-mt-1_56
 win32: include ( c:/qwt-6.1.1/qwt.prf )
@@ -66,8 +56,6 @@ SOURCES += \
     instrumentList/ReadQuotesFromFile.cpp \
     instrumentList/InstrumentListWorker.cpp \
     instrumentList/ScanPatternMatches.cpp \
-    license/RegisterDialog.cpp \
-    license/LicenseRegistration.cpp \
     main/main.cpp\
     main/MainWindow.cpp \
     main/StackedStockCharts.cpp \
@@ -96,8 +84,6 @@ HEADERS  += \
     instrumentList/InstrumentListWorker.h \
     instrumentList/ScanPatternMatches.h \
     instrumentList/InstrumentListTypes.h \
-    license/RegisterDialog.h \
-    license/LicenseRegistration.h \
     main/MainWindow.h \
     main/StackedStockCharts.h \
     patternMatchList/PatternMatchTableView.h \
@@ -124,16 +110,16 @@ INCLUDEPATH += $$PWD/lib/PatternRecognitionLib/src/chartSegment\
     $$PWD/patternMatchList\
     $$PWD/patternPlot\
     $$PWD/util\
-    $$PWD/lib/PatternRecognitionLib/src/chartSegmentList\
-    $$PWD/lib/PatternRecognitionLib/src/date\
-    $$PWD/lib/PatternRecognitionLib/src/math\
-    $$PWD/lib/PatternRecognitionLib/src/patternMatch\
-    $$PWD/lib/PatternRecognitionLib/src/patternMatchFilter\
-    $$PWD/lib/PatternRecognitionLib/src/patternMatchValidator\
-    $$PWD/lib/PatternRecognitionLib/src/patternScan\
-    $$PWD/lib/PatternRecognitionLib/src/patternShape\
-    $$PWD/lib/PatternRecognitionLib/src/quoteData\
-    $$PWD/lib/LicenseKey/LicenseKeyLib
+    $$PWD/lib/ChartPatternRecognitionLib/src/chartSegment\
+    $$PWD/lib/ChartPatternRecognitionLib/src/chartSegmentList\
+    $$PWD/lib/ChartPatternRecognitionLib/src/date\
+    $$PWD/lib/ChartPatternRecognitionLib/src/math\
+    $$PWD/lib/ChartPatternRecognitionLib/src/patternMatch\
+    $$PWD/lib/ChartPatternRecognitionLib/src/patternMatchFilter\
+    $$PWD/lib/ChartPatternRecognitionLib/src/patternMatchValidator\
+    $$PWD/lib/ChartPatternRecognitionLib/src/patternScan\
+    $$PWD/lib/ChartPatternRecognitionLib/src/patternShape\
+    $$PWD/lib/ChartPatternRecognitionLib/src/quoteData
 
 RESOURCES += icons.qrc
 
